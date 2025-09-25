@@ -1,25 +1,26 @@
-id	question	option1	option2	option3	option4	answer	explanation	difficulty
-1	Which planet is known as the Red Planet?	Jupiter	Mars	Earth	Venus	2	Mars is called the Red Planet because of its reddish surface.	‰‹‰
-2	What is the capital city of France?	Berlin	Madrid	Rome	Paris	4	Paris is the capital of France.	‰‹‰
-3	What is the chemical symbol for water?	H2O	CO2	HO	O2	1	Water is H2O.	‰‹‰
-4	Which continent is the largest by land area?	Africa	Europe	North America	Asia	4	Asia is the largest continent.	‰‹‰
-5	What is the square root of 64?	6	7	9	8	4	The square root of 64 is 8.	‰‹‰
-6	Who wrote 'Romeo and Juliet'?	Charles Dickens	William Shakespeare	Jane Austen	Mark Twain	2	Shakespeare wrote Romeo and Juliet.	•W€
-7	Which gas do plants absorb for photosynthesis?	Carbon dioxide	Hydrogen	Oxygen	Nitrogen	1	Plants absorb CO2.	‰‹‰
-8	What is the freezing point of water in Celsius?	-10	32	0	100	3	Water freezes at 0‹C.	‰‹‰
-9	Which organ pumps blood in the human body?	Brain	Liver	Lungs	Heart	4	The heart pumps blood.	‰‹‰
-10	What is the largest mammal in the world?	Blue whale	Giraffe	Hippopotamus	Elephant	1	The blue whale is the largest mammal.	‰‹‰
-11	Which element has atomic number 1?	Hydrogen	Carbon	Oxygen	Nitrogen	1	Hydrogen is atomic number 1.	‰‹‰
-12	What is the currency of Japan?	Won	Dollar	Yen	Yuan	3	The Yen is Japan's currency.	‰‹‰
-13	Which country is famous for pyramids?	Mexico	India	China	Egypt	4	Egypt is famous for pyramids.	‰‹‰
-14	What process do plants use to make food?	Digestion	Respiration	Fermentation	Photosynthesis	4	Plants make food by photosynthesis.	‰‹‰
-15	Which ocean is the largest?	Atlantic	Indian	Pacific	Arctic	3	The Pacific Ocean is the largest.	•W€
-16	What is 9 ~ 9?	72	81	99	90	2	9~9=81.	‰‹‰
-17	Which language has the most native speakers?	English	Spanish	Chinese	French	3	Chinese has the most native speakers.	•W€
-18	What is the tallest mountain in the world?	K2	Everest	Fuji	Kilimanjaro	2	Mount Everest is the tallest.	•W€
-19	Which blood type is universal donor?	A	B	AB	O	4	O type is universal donor.	•W€
-20	Which planet is closest to the Sun?	Venus	Mercury	Mars	Earth	2	Mercury is closest to the Sun.	‰‹‰
-21	What is the boiling point of water in Celsius?	50	90	100	120	3	Water boils at 100‹C.	‰‹‰
-22	Who painted the Mona Lisa?	Van Gogh	Picasso	Da Vinci	Michelangelo	3	Leonardo da Vinci painted it.	•W€
-23	Which metal is liquid at room temperature?	Iron	Gold	Mercury	Silver	3	Mercury is liquid at room temp.	•W€
-24	What is the largest desert in the world?	Sahara	Gobi	Antarctica	Kalahari	3	Antarctica is the largest desert.	‰—p
+id,question,option1,option2,option3,option4,answer,explanation,difficulty
+1,Which planet is known as the Red Planet?,Jupiter,Mars,Earth,Venus,2,Mars is called the Red Planet because of its reddish surface.,åˆç´š
+2,What is the capital city of France?,Berlin,Madrid,Rome,Paris,4,Paris is the capital of France.,åˆç´š
+3,What is the chemical symbol for water?,H2O,CO2,HO,O2,1,Water is H2O.,åˆç´š
+4,Which continent is the largest by land area?,Africa,Europe,North America,Asia,4,Asia is the largest continent.,åˆç´š
+5,What is the square root of 64?,6,7,9,8,4,The square root of 64 is 8.,åˆç´š
+6,Who wrote 'Romeo and Juliet'?,Charles Dickens,William Shakespeare,Jane Austen,Mark Twain,2,Shakespeare wrote Romeo and Juliet.,æ¨™æº–
+7,Which gas do plants absorb for photosynthesis?,Carbon dioxide,Hydrogen,Oxygen,Nitrogen,1,Plants absorb CO2.,åˆç´š
+8,What is the freezing point of water in Celsius?,-10,32,0,100,3,Water freezes at 0Â°C.,åˆç´š
+9,Which organ pumps blood in the human body?,Brain,Liver,Lungs,Heart,4,The heart pumps blood.,åˆç´š
+10,What is the largest mammal in the world?,Blue whale,Giraffe,Hippopotamus,Elephant,1,The blue whale is the largest mammal.,åˆç´š
+11,Which element has atomic number 1?,Hydrogen,Carbon,Oxygen,Nitrogen,1,Hydrogen is atomic number 1.,åˆç´š
+12,What is the currency of Japan?,Won,Dollar,Yen,Yuan,3,The Yen is Japan's currency.,åˆç´š
+13,Which instrument has keys, pedals, and strings?,Guitar,Drum,Violin,Piano,4,The piano has keys, pedals, and strings.,æ¨™æº–
+14,Which country is famous for pyramids?,Mexico,India,China,Egypt,4,Egypt is famous for pyramids.,åˆç´š
+15,What process do plants use to make food?,Digestion,Respiration,Fermentation,Photosynthesis,4,Plants make food by photosynthesis.,åˆç´š
+16,Which ocean is the largest?,Atlantic,Indian,Pacific,Arctic,3,The Pacific Ocean is the largest.,æ¨™æº–
+17,What is 9 Ã— 9?,72,81,99,90,2,9Ã—9=81.,åˆç´š
+18,Which language has the most native speakers?,English,Spanish,Chinese,French,3,Chinese has the most native speakers.,æ¨™æº–
+19,What is the tallest mountain in the world?,K2,Everest,Fuji,Kilimanjaro,2,Mount Everest is the tallest.,æ¨™æº–
+20,Which blood type is universal donor?,A,B,AB,O,4,O type is universal donor.,æ¨™æº–
+21,Which planet is closest to the Sun?,Venus,Mercury,Mars,Earth,2,Mercury is closest to the Sun.,åˆç´š
+22,What is the boiling point of water in Celsius?,50,90,100,120,3,Water boils at 100Â°C.,åˆç´š
+23,Who painted the Mona Lisa?,Van Gogh,Picasso,Da Vinci,Michelangelo,3,Leonardo da Vinci painted it.,æ¨™æº–
+24,Which metal is liquid at room temperature?,Iron,Gold,Mercury,Silver,3,Mercury is liquid at room temp.,æ¨™æº–
+25,What is the largest desert in the world?,Sahara,Gobi,Antarctica,Kalahari,3,Antarctica is the largest desert.,å¿œç”¨
