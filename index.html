@@ -95,7 +95,7 @@ async function startQuiz(tag){
   document.getElementById('controls').style.display='none';
   document.getElementById('mainTitle').style.display='none'; // タイトル非表示
   const pool=await loadCSV(csvFileName(tag));
-  questions=shuffle(pool).slice(0,25); // 各授業25問固定
+  questions=shuffle(pool).slice(0,20); // 各授業20問固定
   current=score=0;
   document.getElementById('result').style.display='none';
   document.getElementById('quiz').style.display='';
