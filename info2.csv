@@ -1,26 +1,31 @@
-id,question,option1,option2,option3,option4,answer,explanation,difficulty
-1,Which planet is known as the Red Planet?,Jupiter,Mars,Earth,Venus,2,Mars is called the Red Planet because of its reddish surface.,初級
-2,What is the capital city of France?,Berlin,Madrid,Rome,Paris,4,Paris is the capital of France.,初級
-3,What is the chemical symbol for water?,H2O,CO2,HO,O2,1,Water is H2O.,初級
-4,Which continent is the largest by land area?,Africa,Europe,North America,Asia,4,Asia is the largest continent.,初級
-5,What is the square root of 64?,6,7,9,8,4,The square root of 64 is 8.,初級
-6,Who wrote 'Romeo and Juliet'?,Charles Dickens,William Shakespeare,Jane Austen,Mark Twain,2,Shakespeare wrote Romeo and Juliet.,標準
-7,Which gas do plants absorb for photosynthesis?,Carbon dioxide,Hydrogen,Oxygen,Nitrogen,1,Plants absorb CO2.,初級
-8,What is the freezing point of water in Celsius?,-10,32,0,100,3,Water freezes at 0°C.,初級
-9,Which organ pumps blood in the human body?,Brain,Liver,Lungs,Heart,4,The heart pumps blood.,初級
-10,What is the largest mammal in the world?,Blue whale,Giraffe,Hippopotamus,Elephant,1,The blue whale is the largest mammal.,初級
-11,Which element has atomic number 1?,Hydrogen,Carbon,Oxygen,Nitrogen,1,Hydrogen is atomic number 1.,初級
-12,What is the currency of Japan?,Won,Dollar,Yen,Yuan,3,The Yen is Japan's currency.,初級
-13,Which instrument has keys, pedals, and strings?,Guitar,Drum,Violin,Piano,4,The piano has keys, pedals, and strings.,標準
-14,Which country is famous for pyramids?,Mexico,India,China,Egypt,4,Egypt is famous for pyramids.,初級
-15,What process do plants use to make food?,Digestion,Respiration,Fermentation,Photosynthesis,4,Plants make food by photosynthesis.,初級
-16,Which ocean is the largest?,Atlantic,Indian,Pacific,Arctic,3,The Pacific Ocean is the largest.,標準
-17,What is 9 × 9?,72,81,99,90,2,9×9=81.,初級
-18,Which language has the most native speakers?,English,Spanish,Chinese,French,3,Chinese has the most native speakers.,標準
-19,What is the tallest mountain in the world?,K2,Everest,Fuji,Kilimanjaro,2,Mount Everest is the tallest.,標準
-20,Which blood type is universal donor?,A,B,AB,O,4,O type is universal donor.,標準
-21,Which planet is closest to the Sun?,Venus,Mercury,Mars,Earth,2,Mercury is closest to the Sun.,初級
-22,What is the boiling point of water in Celsius?,50,90,100,120,3,Water boils at 100°C.,初級
-23,Who painted the Mona Lisa?,Van Gogh,Picasso,Da Vinci,Michelangelo,3,Leonardo da Vinci painted it.,標準
-24,Which metal is liquid at room temperature?,Iron,Gold,Mercury,Silver,3,Mercury is liquid at room temp.,標準
-25,What is the largest desert in the world?,Sahara,Gobi,Antarctica,Kalahari,3,Antarctica is the largest desert.,応用
+1,満足度「1:満足 2:まぁまぁ満足 3:不満」は、質的データ・量的データのどちらか。,A（質的データ）,B（量的データ）,2,"順序には意味があるが、間隔に意味がない（1と2の差が2と3の差と同じとは限らない）ため「質的データ」。"
+2,満足度「1:満足 2:まぁまぁ満足 3:不満」の尺度はどれか。,名義尺度,順序尺度,間隔尺度,比例尺度,2,"順序に意味があるため「順序尺度」。"
+3,「通学距離（km）」は、質的データ・量的データのどちらか。,A（質的データ）,B（量的データ）,2,"数値であり、間隔と比率に意味がある（2kmは1kmの2倍）ため「量的データ」。"
+4,「通学距離（km）」の尺度はどれか。,名義尺度,順序尺度,間隔尺度,比例尺度,4,"0kmを基準に比率が計算できるため「比例尺度」。"
+5,「テストの点数（点）」は、質的データ・量的データのどちらか。,A（質的データ）,B（量的データ）,2,"数値であり、間隔に意味があるため「量的データ」。"
+6,「テストの点数（点）」の尺度はどれか。,名義尺度,順序尺度,間隔尺度,比例尺度,3,"0点という基準はあるが、80点は40点の2倍賢いとは言えない。一般に「間隔尺度」とされる。（※比例尺度とする見方もある）"
+7,「性別（1:男 2:女）」は、質的データ・量的データのどちらか。,A（質的データ）,B（量的データ）,1,"数値は分類のための記号であり、順序や量に意味がないため「質的データ」。"
+8,「性別（1:男 2:女）」の尺度はどれか。,名義尺度,順序尺度,間隔尺度,比例尺度,1,"単なる分類であり、順序や量に意味がないため「名義尺度」。"
+9,データベースにおいて、データの重複や余分な箇所をなくし、不具合を減らす（更新時の矛盾などを防ぐ）操作を何と呼ぶか。,正規化,初期化,最適化,構造化,1,"正規化（Normalization）と呼びます。"
+10,"図のExcelで、「学生」で、かつ「テニス」が好きな人の人数を数えるCOUNTIFS関数はどれか。","=COUNTIFS(B:B,""学生"",C:C,""テニス"")","=COUNTIF(B:B,""学生"",C:C,""テニス"")","=COUNTIFS(B:C,""学生"",""テニス"")","=COUNTIFS(B:B,""学生"")+COUNTIFS(C:C,""テニス"")",1,"=COUNTIFS(範囲1, 条件1, 範囲2, 条件2) の構文を使います。"
+11,図のExcelで、「20代の学生」の人数を数える関数はどれか。,"=COUNTIFS(B:B,""学生"",E:E,"">=20"",E:E,""<30"")","=COUNTIFS(B:B,""学生"",E:E,""20代"")","=COUNTIF(B:B,""学生"",E:E,"">=20"")","=COUNTIFS(B:B,""学生"")+COUNTIFS(E:E,"">=20"")",1,"「20代」は「20歳以上」かつ「30歳未満」という2つの条件で表現します。"
+12,ある集団全体を調査したいが、それが困難な場合に、集団の一部を取り出して調べる調査を何と呼ぶか。,全数調査,標本調査,テキストマイニング,単純無作為抽出法,2,"集団の一部（標本）を調べるため「標本調査」と呼びます。"
+13,標本調査に対して、ある集団全体を調査することを何と呼ぶか。,全数調査,標本調査,層別抽出法,ヒストグラム,1,"「全数調査」と呼びます。例：国勢調査。"
+14,標本の抽出方法のうち、集団からランダムに（無作為に）抽出する方法を何と呼ぶか。,単純無作為抽出法,層別抽出法,全数調査,外れ値,1,"「単純無作為抽出法」と呼びます。"
+15,"標本の抽出方法のうち、集団をいくつかの層（グループ）に分け、各層から均等に抽出する方法を何と呼ぶか。",単純無作為抽出法,層別抽出法,全数調査,欠損値,2,"「層別抽出法」と呼びます。例：年代別、性別ごと。"
+16,"収集されたデータのうち、書き忘れなどによって数値が欠けているデータを何と呼ぶか。",外れ値,欠損値,ヒストグラム,標本調査,2,"「欠損値」と呼びます。"
+17,"収集されたデータのうち、他の値と比べて極端に大きい、または小さい値を何と呼ぶか。",外れ値,欠損値,テキストマイニング,全数調査,1,"「外れ値」と呼びます。入力ミスや測定エラーの可能性があります。"
+18,"データの分布を可視化するため、数値の範囲をいくつかの区間に分け、各区間のデータの個数を棒グラフで表したものを何と呼ぶか。",ヒストグラム,散布図,箱ひげ図,デンドログラム,1,"「ヒストグラム（度数分布図）」と呼びます。"
+19,文章から情報を取り出す手法で、まず文章を単語で区切り、その出現回数や傾向を解析するものを何と呼ぶか。,テキストマイニング,データマイニング,ヒストグラム,欠損値,1,"「テキストマイニング」と呼びます。"
+20,1つの説明変数（原因）で、1つの目的変数（結果）を予測する分析手法を何と呼ぶか。,単回帰分析,重回帰分析,主成分分析,k-means法,1,"説明変数が単一（1つ）のため「単回帰分析」と呼びます。"
+21,複数の説明変数（原因）で、1つの目的変数（結果）を予測する分析手法を何と呼ぶか。,単回帰分析,重回帰分析,主成分分析,2値分類,2,"説明変数が複数（重なっている）のため「重回帰分析」と呼びます。"
+22,図の散布図から作成されたデンドログラム（樹形図）として、最も適切なものはどれか。,A,B,C,D,3,"散布図を見ると、(B,C)が最も近く、次に(D,E)、次に(F,G)がクラスターを形成し、その後に(A)が(B,C)に加わります。この構造を持つのはCです。"
+23,Pythonで `print('Hello, Hibiki')` を実行した結果はどれか。,Hello, Hibiki,"'Hello, Hibiki'",エラーになる,Hello Hibiki,1,"文字列（' 'で囲まれたもの）がそのまま出力されます。"
+24,Pythonで `print(100+200)` を実行した結果はどれか。,300,100+200,'100+200',エラーになる,1,"クォーテーション（'）で囲まれていないため、計算結果の 300 が出力されます。"
+25,Pythonで `print('10*4')` を実行した結果はどれか。,40,10*4,'10*4',エラーになる,2,"クォーテーション（'）で囲まれているため、計算されず、文字列の 10*4 がそのまま出力されます。"
+26,Pythonで `print(15/2)` を実行した結果はどれか。,7,7.5,7.0,8,2,"Pythonの / 演算子は、小数点以下も計算する「浮動小数点除算」を行うため 7.5 となります。"
+27,Pythonで `a=5` `b=7` `print(a+b)` を実行した結果はどれか。,12,a+b,'a+b',57,1,"変数a(5)とb(7)が足し合わされ、12 が出力されます。"
+28,Pythonで `name='Hiroki'` `print(name,'さんこんにちは')` を実行した結果はどれか。,"Hiroki さんこんにちは","'Hiroki' 'さんこんにちは'",エラーになる,Hirokiさんこんにちは,1,"カンマ（,）で区切られた要素は、スペース区切りで連結されて出力されます。"
+29,Pythonで `sum=0` `for i in range(10): sum = sum + i` `print(sum)` を実行した結果はどれか。,55,45,10,9,2,"range(10) は 0から9 までの数値を意味します。0+1+2+...+9 の合計は 45 です。"
+30,Pythonで `a=10` `if a%2 == 0:` `print('偶数')` `else:` `print('奇数')` を実行した結果はどれか。,偶数,奇数,エラーになる,10,1,"a%2 は「aを2で割った余り」を求めます。10%2は0であり、0==0はTrue（真）となるため if側 の「偶数」が出力されます。"
+31,Pythonの比較演算子で、「aとbは等しい」を意味する記号はどれか。,=,==,!=,<=,2,"= は代入、== が「等しい」を意味する比較演算子です。"
