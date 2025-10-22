@@ -72,7 +72,6 @@
       margin-top: 1.5rem;
     }
     
-    /* ▼▼▼ CSS追加 ▼▼▼ */
     /* オーバーレイ（マスク） */
     #overlay {
       position: fixed; /* 画面に固定 */
@@ -121,7 +120,6 @@
     #modalNextBtn:hover {
       background: #005a9e;
     }
-    /* ▲▲▲ CSS追加ここまで ▲▲▲ */
 </style>
 </head>
 <body>
@@ -139,7 +137,7 @@
     <div id="question"></div>
     <ul id="options"></ul>
     <div id="progress"></div>
-    </div>
+  </div>
 
   <div id="result" style="display:none;"></div>
 
@@ -151,7 +149,9 @@
       <button id="modalNextBtn">次へ ▶</button>
     </div>
   </div>
-  <script>
+
+
+<script>
   let questions=[],current=0,score=0;
 
   // DOMが読み込まれたらイベントリスナーを設定
@@ -161,7 +161,6 @@
       btn.onclick=()=>startQuiz(btn.dataset.tag);
     });
 
-    // ▼▼▼ JS変更 ▼▼▼
     // モーダルの「次へ」ボタンの処理をここで定義
     document.getElementById('modalNextBtn').onclick = () => {
       document.getElementById('overlay').style.display = 'none'; // モーダルを閉じる
@@ -173,7 +172,6 @@
         showResults();
       }
     };
-    // ▲▲▲ JS変更ここまで ▲▲▲
   });
 
 
@@ -269,10 +267,14 @@
     showQuestion();
   }
 
-  /* showQuestion (変更なし) */
+  /**
+   * ▼▼▼ 修正点 ▼▼▼
+   * showQuestion関数で .textContent を .innerHTML に変更
+   * (問題文の <br> タグを反映させるため)
+   */
   function showQuestion(){
     const q=questions[current];
-    document.getElementById('question').textContent=q.q;
+    document.getElementById('question').innerHTML = q.q; // ← 修正点
     const ul=document.getElementById('options'); ul.innerHTML='';
     q.options.forEach((opt,i)=>{
       const li=document.createElement('li');
@@ -284,10 +286,7 @@
   }
 
 
-  /**
-   * ▼▼▼ JS変更 ▼▼▼
-   * selectAnswer関数をモーダル対応にしました
-   */
+  /* selectAnswer (変更なし) */
   function selectAnswer(idx){
     const q=questions[current],ul=document.getElementById('options');
     
@@ -313,10 +312,8 @@
     document.getElementById('modal-explanation').textContent = "解説: " + q.explanation;
     
     // オーバーレイ（モーダル）を表示
-    // CSSで display:flex を使うと中央揃えになるので JS側も合わせる
     document.getElementById('overlay').style.display = 'flex';
   }
-  /* ▲▲▲ JS変更ここまで ▲▲▲ */
 
 
   /* showResults (変更なし) */
