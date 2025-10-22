@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>2学期末試験対策</title>
 <style>
+  /* このCSSは、最初にご提示いただいた
+    スマホ向けのレイアウト（18px基準、大きいボタン）のままです。
+  */
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     margin: 0;
@@ -54,6 +57,9 @@
 <div id="result" style="display:none;"></div>
 
 <script>
+/* このJavaScriptは、選択肢の可変対応、
+  エラーハンドリングが追加された最新版です。
+*/
 let questions=[],current=0,score=0;
 
 document.querySelectorAll('.tag-btn').forEach(btn=>{
@@ -61,9 +67,9 @@ document.querySelectorAll('.tag-btn').forEach(btn=>{
 });
 
 /**
- * CSVファイルを読み込み、問題オブジェクトの配列を返します。
- * (変更点：選択肢可変対応、難易度削除、エラーハンドリング追加)
- */
+ * CSVファイルを読み込み、問題オブジェクトの配列を返します。
+ * (変更点：選択肢可変対応、難易度削除、エラーハンドリング追加)
+ */
 async function loadCSV(file){
   try {
     const text=await (await fetch(file)).text();
