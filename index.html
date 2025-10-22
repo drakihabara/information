@@ -238,7 +238,8 @@
     msg.innerHTML=(idx===q.answer
       ? (score++,'<span style="color:green">🟢 正解！</span>')
       : `<span style="color:red">❌ 不正解</span><br><span style="color:#555">正解: ${q.options[q.answer]}</span>`);
-  s    const exp=document.createElement('p'); exp.textContent="解説: "+q.explanation;
+    // ↓↓↓↓ 修正点：ここにあった 's' を削除しました ↓↓↓↓
+    const exp=document.createElement('p'); exp.textContent="解説: "+q.explanation;
     quiz.append(msg,exp);
     const next=document.getElementById('nextBtn');
     next.style.display='block';
@@ -251,7 +252,7 @@
   function showResults(){
     document.getElementById('quiz').style.display='none';
     const r=document.getElementById('result');
-    r.innerHTML=`<h2>結果: ${score}/${questions.length}</h2>`;
+  s  r.innerHTML=`<h2>結果: ${score}/${questions.length}</h2>`;
     r.style.display='';
     document.getElementById('controls').style.display='';
     document.getElementById('mainTitle').style.display='block';
