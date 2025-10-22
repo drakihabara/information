@@ -29,11 +29,11 @@
       border-radius: 6px;
       font-size: 1.1rem;
       background: #fff;
-      text-align: center; /* text-align: center を追加 */
-      cursor: pointer;      /* cursor: pointer を追加 */
+      text-align: center;
+      cursor: pointer;
     }
     .tag-btn:hover {
-      background: #f0f0f0;  /* hover エフェクトを追加 */
+      background: #f0f0f0;
     }
     #question {
       margin: 0.8rem 0;
@@ -56,7 +56,7 @@
       border-radius: 6px;
       background: #fff;
       text-align: left;
-      cursor: pointer;      /* cursor: pointer を追加 */
+      cursor: pointer;
     }
     #options button:disabled {
       opacity: 0.7;
@@ -102,33 +102,74 @@
   <div id="result" style="display:none;"></div>
 
 <script>
-  /*
-   * JavaScriptは「選択肢可変」「難易度削除」
-   * 「エラー処理」を反映させたものです。
-   */
   let questions=[],current=0,score=0;
 
   document.querySelectorAll('.tag-btn').forEach(btn=>{
     btn.onclick=()=>startQuiz(btn.dataset.tag);
   });
 
+  /**
+   * ▼▼▼ 修正点 ▼▼▼
+   * loadCSV関数を、" (ダブルクォート) に対応したCSVパーサーに置き換えました。
+   * これにより、"RGB (Red, Green, Blue)" のようなカンマを含むデータを扱えます。
+   */
   async function loadCSV(file){
-    const text=await (await fetch(file)).text();
-    return text.trim().split(/\r?\n/).slice(1).map(line=>{
-      const c=line.split(",");
-      
+    const text = await (await fetch(file)).text();
+
+    // CSVの1行をパースする内部関数
+    const parseCsvLine = (line) => {
+      const result = [];
+      let currentField = '';
+      let inQuote = false;
+
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+
+        if (char === '"') {
+          if (inQuote && line[i + 1] === '"') {
+            // "" (エスケープされたクォート) の場合
+            currentField += '"';
+            i++; // 次の " をスキップ
+          } else {
+            // クォートの開始または終了
+            inQuote = !inQuote;
+          }
+        } else if (char === ',' && !inQuote) {
+          // クォートの外のカンマ (区切り文字)
+          result.push(currentField);
+          currentField = '';
+        } else {
+          // 通常の文字
+          currentField += char;
+        }
+      }
+      result.push(currentField); // 最後のフィールドを追加
+
+      // 各フィールドの前後にある " を削除
+      return result.map(field => {
+        if (field.startsWith('"') && field.endsWith('"')) {
+          return field.substring(1, field.length - 1).replace(/""/g, '"');
+        }
+        return field;
+      });
+    };
+
+    return text.trim().split(/\r?\n/).slice(1).map(line => {
+      if (!line) return null; // 空行を無視
+      const c = parseCsvLine(line); // 新しいパース関数を使用
+
       if (c.length < 5) return null; 
 
       const lastIdx = c.length - 1;
       const answerIdx = lastIdx - 1;
 
-      return {
-        q: c[1],
-        options: c.slice(2, answerIdx),
-        answer: +c[answerIdx] - 1,
-        explanation: c[lastIdx]
-      };
-    }).filter(q => q !== null);
+      return {
+        q: c[1],
+        options: c.slice(2, answerIdx),
+        answer: +c[answerIdx] - 1,
+        explanation: c[lastIdx]
+      };
+    }).filter(q => q !== null);
   }
 
   function shuffle(a){
@@ -139,7 +180,6 @@
     return a;
   }
 
-  // csvFileName関数を「2学期末試験対策」用にします
   function csvFileName(tag){
     return {
       info1:'info1.csv',
@@ -153,13 +193,12 @@
     document.getElementById('controls').style.display='none';
     document.getElementById('mainTitle').style.display='none'; 
     
-    // エラーハンドリングを追加
     let pool;
     try {
       pool = await loadCSV(csvFileName(tag));
     } catch(err) {
-      console.error(err);
-      pool = []; // エラー時は空にする
+      console.error("CSV Load Error:", err);
+      pool = []; 
     }
 
     if (!pool || pool.length === 0) {
@@ -194,7 +233,7 @@
     [...ul.children].forEach((li,i)=>{
       const b=li.firstChild; b.disabled=true;
       if(i===q.answer)b.style.background='lightgreen';
-      else if(i===idx)b.style.background='salmon'; // ← ここを修正しました
+      else if(i===idx)b.style.background='salmon'; 
     });
     const quiz=document.getElementById('quiz');
     const msg=document.createElement('p');
@@ -216,9 +255,4 @@
     const r=document.getElementById('result');
     r.innerHTML=`<h2>結果: ${score}/${questions.length}</h2>`;
     r.style.display='';
-    document.getElementById('controls').style.display='';
-    document.getElementById('mainTitle').style.display='block'; 
-  }
-</script>
-</body>
-</html>
+  D
