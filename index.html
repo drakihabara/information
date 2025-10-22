@@ -60,35 +60,19 @@ document.querySelectorAll('.tag-btn').forEach(btn=>{
   btn.onclick=()=>startQuiz(btn.dataset.tag);
 });
 
-/*
- * ▼▼▼ 変更点 ▼▼▼
- * loadCSV関数を「難易度削除」「選択肢可変」に対応させました。
- */
 async function loadCSV(file){
   const text=await (await fetch(file)).text();
   return text.trim().split(/\r?\n/).slice(1).map(line=>{
     const c=line.split(",");
-    
-    // ID(0), 問(1), 選択肢1(2), 答(3), 解説(4) -> 最低5列
-    if (c.length < 5) return null; 
-
-    const lastIdx = c.length - 1;
-    const answerIdx = lastIdx - 1;
-
     return {
-      q: c[1], // 1列目: 問題文
-      // 2列目から「答え」の列の直前までを選択肢
-      options: c.slice(2, answerIdx),
-      // 最後から2番目の列を「答え」 (1始まりなので -1 する)
-      answer: +c[answerIdx] - 1,
-      // 最後の列を「解説」
-      explanation: c[lastIdx]
-      // 難易度の行は削除
+      q: c[1],
+      options: c.slice(2,6),
+      answer: +c[6]-1,
+      explanation: c[7],
+      difficulty: (c[8]||'').trim()
     };
-  }).filter(q => q !== null); // 不正な行(null)を取り除く
+  });
 }
-/* ▲▲▲ 変更ここまで ▲▲▲ */
-
 
 function shuffle(a){
   for(let i=a.length-1;i>0;i--){
@@ -111,16 +95,6 @@ async function startQuiz(tag){
   document.getElementById('controls').style.display='none';
   document.getElementById('mainTitle').style.display='none'; // タイトル非表示
   const pool=await loadCSV(csvFileName(tag));
-  
-  // poolが空（読込失敗）の場合は何もしない
-  if (!pool || pool.length === 0) {
-      // エラー時（ファイルが見つからないなど）はコントロールを再表示
-      alert("問題ファイルの読み込みに失敗しました。ファイル名や場所を確認してください。");
-      document.getElementById('controls').style.display=''; 
-      document.getElementById('mainTitle').style.display='block';
-      return;
-  }
-
   questions=shuffle(pool).slice(0,20); // 各授業20問固定
   current=score=0;
   document.getElementById('result').style.display='none';
@@ -141,13 +115,12 @@ function showQuestion(){
   document.getElementById('progress').textContent=`${current+1}/${questions.length}`;
 }
 
-// selectAnswer関数は、ご提示いただいた元のコードのままです
 function selectAnswer(idx){
   const q=questions[current],ul=document.getElementById('options');
   [...ul.children].forEach((li,i)=>{
     const b=li.firstChild; b.disabled=true;
     if(i===q.answer)b.style.background='lightgreen';
-_     else if(i===idx)b.style.background='salmon';
+    else if(i===idx)b.style.background='salmon';
   });
   const quiz=document.getElementById('quiz');
   const msg=document.createElement('p');
