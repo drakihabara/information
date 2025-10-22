@@ -5,9 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>2学期末試験対策</title>
 <style>
-  /* このCSSは、最初にご提示いただいた
-    スマホ向けのレイアウト（18px基準、大きいボタン）のままです。
-  */
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     margin: 0;
@@ -57,49 +54,41 @@
 <div id="result" style="display:none;"></div>
 
 <script>
-/* このJavaScriptは、選択肢の可変対応、
-  エラーハンドリングが追加された最新版です。
-*/
 let questions=[],current=0,score=0;
 
 document.querySelectorAll('.tag-btn').forEach(btn=>{
   btn.onclick=()=>startQuiz(btn.dataset.tag);
 });
 
-/**
- * CSVファイルを読み込み、問題オブジェクトの配列を返します。
- * (変更点：選択肢可変対応、難易度削除、エラーハンドリング追加)
- */
+/*
+ * ▼▼▼ 変更点 ▼▼▼
+ * loadCSV関数を「難易度削除」「選択肢可変」に対応させました。
+ */
 async function loadCSV(file){
-  try {
-    const text=await (await fetch(file)).text();
-    return text.trim().split(/\r?\n/).slice(1).map(line=>{
-      const c=line.split(",");
-      // ID(0), 問(1), 選択肢1(2), 答(3), 解説(4) -> 最低5列
-      if (c.length < 5) return null; 
+  const text=await (await fetch(file)).text();
+  return text.trim().split(/\r?\n/).slice(1).map(line=>{
+    const c=line.split(",");
+    
+    // ID(0), 問(1), 選択肢1(2), 答(3), 解説(4) -> 最低5列
+    if (c.length < 5) return null; 
 
-      const lastIdx = c.length - 1;
-      const answerIdx = lastIdx - 1;
+    const lastIdx = c.length - 1;
+    const answerIdx = lastIdx - 1;
 
-      return {
-        q: c[1], // 1列目: 問題文
-        // 2列目から「答え」の列の直前までを選択肢
-        options: c.slice(2, answerIdx),
-        // 最後から2番目の列を「答え」 (1始まりなので -1 する)
-        answer: +c[answerIdx] - 1,
-        // 最後の列を「解説」
-        explanation: c[lastIdx]
-      };
-    }).filter(q => q !== null); // 不正な行(null)を取り除く
-  } catch (err) {
-    console.error("CSV load error:", err);
-    alert("問題ファイルの読み込みに失敗しました。ファイル名や場所を確認してください。");
-    // エラーが起きたらコントロールを再表示
-    document.getElementById('controls').style.display=''; 
-    document.getElementById('mainTitle').style.display='block';
-    return []; // 空の配列を返す
-  }
+    return {
+      q: c[1], // 1列目: 問題文
+      // 2列目から「答え」の列の直前までを選択肢
+      options: c.slice(2, answerIdx),
+      // 最後から2番目の列を「答え」 (1始まりなので -1 する)
+      answer: +c[answerIdx] - 1,
+      // 最後の列を「解説」
+      explanation: c[lastIdx]
+      // 難易度の行は削除
+    };
+  }).filter(q => q !== null); // 不正な行(null)を取り除く
 }
+/* ▲▲▲ 変更ここまで ▲▲▲ */
+
 
 function shuffle(a){
   for(let i=a.length-1;i>0;i--){
@@ -121,10 +110,16 @@ function csvFileName(tag){
 async function startQuiz(tag){
   document.getElementById('controls').style.display='none';
   document.getElementById('mainTitle').style.display='none'; // タイトル非表示
-  
-  const pool=await loadCSV(csvFileName(tag));
+  const pool=await loadCSV(csvFileName(tag));
+  
   // poolが空（読込失敗）の場合は何もしない
-  if (!pool || pool.length === 0) return; 
+  if (!pool || pool.length === 0) {
+      // エラー時（ファイルが見つからないなど）はコントロールを再表示
+      alert("問題ファイルの読み込みに失敗しました。ファイル名や場所を確認してください。");
+      document.getElementById('controls').style.display=''; 
+      document.getElementById('mainTitle').style.display='block';
+      return;
+  }
 
   questions=shuffle(pool).slice(0,20); // 各授業20問固定
   current=score=0;
@@ -146,24 +141,19 @@ function showQuestion(){
   document.getElementById('progress').textContent=`${current+1}/${questions.length}`;
 }
 
+// selectAnswer関数は、ご提示いただいた元のコードのままです
 function selectAnswer(idx){
   const q=questions[current],ul=document.getElementById('options');
   [...ul.children].forEach((li,i)=>{
     const b=li.firstChild; b.disabled=true;
     if(i===q.answer)b.style.background='lightgreen';
-    else if(i===idx)b.style.background='salmon';
+_     else if(i===idx)b.style.background='salmon';
   });
   const quiz=document.getElementById('quiz');
-  
-  const msg=document.createElement('p');
-  // (変更点：可読性向上のためif文に変更)
-  if (idx === q.answer) {
-    score++;
-    msg.innerHTML = '<span style="color:green">🟢 正解！</span>';
-  } else {
-    msg.innerHTML = `<span style="color:red">❌ 不正解</span><br><span style="color:#555">正解: ${q.options[q.answer]}</span>`;
-  }
-
+  const msg=document.createElement('p');
+  msg.innerHTML=(idx===q.answer
+    ? (score++,'<span style="color:green">🟢 正解！</span>')
+    : `<span style="color:red">❌ 不正解</span><br><span style="color:#555">正解: ${q.options[q.answer]}</span>`);
   const exp=document.createElement('p'); exp.textContent="解説: "+q.explanation;
   quiz.append(msg,exp);
   const next=document.getElementById('nextBtn');
