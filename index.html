@@ -1,150 +1,211 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>2学期末試験対策</title>
-<style>
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    margin: 0;
-    padding: 0.5rem;
-    background: #f9f9f9;
-    color: #333;
-    font-size: 18px;   /* スマホ向けに18px基準 */
-    line-height: 1.6;
-  }
-  h1 { text-align:center; font-size:1.8rem; margin:0.5rem 0 1rem; }
-  .tag-btn, #nextBtn {
-    display:block; width:100%; padding:1rem; margin:0.4rem 0;
-    border:1px solid #ccc; border-radius:6px; font-size:1.1rem; background:#fff;
-  }
-  #question { margin:0.8rem 0; font-size:1.2rem; line-height:1.6; }
-  #options { list-style:none; padding:0; margin:0; }
-  #options li { margin-bottom:0.5rem; }
-  #options button {
-    width:100%; padding:1rem; font-size:1.1rem;
-    border:1px solid #ccc; border-radius:6px; background:#fff; text-align:left;
-  }
-  #options button:disabled { opacity:0.7; }
-  #progress { font-size:0.9rem; text-align:center; margin:0.8rem 0; }
-  #result h2 { text-align:center; margin-top:1.5rem; }
-  #nextBtn { background:#0078d7; color:#fff; display:none; }
-  #nextBtn:hover { background:#005a9e; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>情報科指導法I</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 0.5rem;
+      background: #f9f9f9;
+      color: #333;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+    h1 {
+      text-align: center;
+      font-size: 1.8rem;
+      margin: 0.5rem 0 1rem;
+    }
+    .tag-btn, #nextBtn {
+      display: block;
+      width: 100%;
+      padding: 1rem;
+      margin: 0.4rem 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      background: #fff;
+      text-align: center;
+      cursor: pointer;
+    }
+    .tag-btn:hover {
+      background: #f0f0f0;
+    }
+    #question {
+      margin: 0.8rem 0;
+      font-size: 1.2rem;
+      line-height: 1.6;
+    }
+    #options {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    #options li {
+      margin-bottom: 0.5rem;
+    }
+    #options button {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1.1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background: #fff;
+      text-align: left;
+      cursor: pointer;
+    }
+    #options button:disabled {
+      opacity: 0.7;
+      cursor: default;
+    }
+    #progress {
+      font-size: 0.9rem;
+      text-align: center;
+      margin: 0.8rem 0;
+    }
+    #result h2 {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+    #nextBtn {
+      background: #0078d7;
+      color: #fff;
+      display: none;
+    }
+    #nextBtn:hover {
+      background: #005a9e;
+    }
+  </style>
 </head>
 <body>
 
-<h1 id="mainTitle">2学期末試験対策</h1>
+  <h1 id="mainTitle">情報科指導法I</h1>
 
-<div id="controls">
-  <button class="tag-btn" data-tag="info1">情報I</button>
-  <button class="tag-btn" data-tag="info2">情報II</button>
-  <button class="tag-btn" data-tag="appA">アプリA</button>
-  <button class="tag-btn" data-tag="appB">アプリB</button>
-</div>
+  <div id="controls">
+    <button class="tag-btn" data-tag="info01">01. 情報とその特性</button>
+    <button class="tag-btn" data-tag="info02">02. メディアとその特性</button>
+    <button class="tag-btn" data-tag="info03">03. 問題を解決する方法</button>
+    <button class="tag-btn" data-tag="info04">04. 情報の収集と分析</button>
+    <button class="tag-btn" data-tag="info05">05. 解決方法の考察</button>
+  </div>
 
-<div id="quiz" style="display:none;">
-  <div id="question"></div>
-  <ul id="options"></ul>
-  <div id="progress"></div>
-  <button id="nextBtn">次へ ▶</button>
-</div>
+  <div id="quiz" style="display:none;">
+    <div id="question"></div>
+    <ul id="options"></ul>
+    <div id="progress"></div>
+    <button id="nextBtn">次へ ▶</button>
+  </div>
 
-<div id="result" style="display:none;"></div>
+  <div id="result" style="display:none;"></div>
 
-<script>
-let questions=[],current=0,score=0;
+  <script>
+    let questions = [], current = 0, score = 0;
 
-document.querySelectorAll('.tag-btn').forEach(btn=>{
-  btn.onclick=()=>startQuiz(btn.dataset.tag);
-});
+    document.querySelectorAll('.tag-btn').forEach(btn => {
+      btn.onclick = () => startQuiz(btn.dataset.tag);
+    });
 
-async function loadCSV(file){
-  const text=await (await fetch(file)).text();
-  return text.trim().split(/\r?\n/).slice(1).map(line=>{
-    const c=line.split(",");
-    return {
-      q: c[1],
-      options: c.slice(2,6),
-      answer: +c[6]-1,
-      explanation: c[7],
-      difficulty: (c[8]||'').trim()
-    };
-  });
-}
+    async function loadCSV(file) {
+      const text = await (await fetch(file)).text();
+      return text.trim().split(/\r?\n/).slice(1).map(line => {
+        const c = line.split(",");
+        return {
+          q: c[1],
+          options: c.slice(2, 6),
+          answer: +c[6] - 1,
+          explanation: c[7],
+          difficulty: (c[8] || '').trim()
+        };
+      });
+    }
 
-function shuffle(a){
-  for(let i=a.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
-  }
-  return a;
-}
+    function shuffle(a) {
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
 
-function csvFileName(tag){
-  return {
-    info1:'info1.csv',
-    info2:'info2.csv',
-    appA:'appA.csv',
-    appB:'appB.csv'
-  }[tag];
-}
+    function csvFileName(tag) {
+      const map = {
+        info01: 'info01.csv',
+        info02: 'info02.csv',
+        info03: 'info03.csv',
+        info04: 'info04.csv',
+        info05: 'info05.csv'
+      };
+      return map[tag];
+    }
 
-async function startQuiz(tag){
-  document.getElementById('controls').style.display='none';
-  document.getElementById('mainTitle').style.display='none'; // タイトル非表示
-  const pool=await loadCSV(csvFileName(tag));
-  questions=shuffle(pool).slice(0,20); // 各授業20問固定
-  current=score=0;
-  document.getElementById('result').style.display='none';
-  document.getElementById('quiz').style.display='';
-  showQuestion();
-}
+    async function startQuiz(tag) {
+      document.getElementById('controls').style.display = 'none';
+      document.getElementById('mainTitle').style.display = 'none';
+      const pool = await loadCSV(csvFileName(tag));
+      questions = shuffle(pool).slice(0, 20);
+      current = 0;
+      score = 0;
+      document.getElementById('result').style.display = 'none';
+      document.getElementById('quiz').style.display = '';
+      showQuestion();
+    }
 
-function showQuestion(){
-  const q=questions[current];
-  document.getElementById('question').textContent=q.q;
-  const ul=document.getElementById('options'); ul.innerHTML='';
-  q.options.forEach((opt,i)=>{
-    const li=document.createElement('li');
-    li.innerHTML=`<button>${opt}</button>`;
-    li.firstChild.onclick=()=>selectAnswer(i);
-    ul.appendChild(li);
-  });
-  document.getElementById('progress').textContent=`${current+1}/${questions.length}`;
-}
+    function showQuestion() {
+      const q = questions[current];
+      document.getElementById('question').textContent = q.q;
+      const ul = document.getElementById('options');
+      ul.innerHTML = '';
+      q.options.forEach((opt, i) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<button>${opt}</button>`;
+        li.firstChild.onclick = () => selectAnswer(i);
+        ul.appendChild(li);
+      });
+      document.getElementById('progress').textContent = `${current + 1}/${questions.length}`;
+    }
 
-function selectAnswer(idx){
-  const q=questions[current],ul=document.getElementById('options');
-  [...ul.children].forEach((li,i)=>{
-    const b=li.firstChild; b.disabled=true;
-    if(i===q.answer)b.style.background='lightgreen';
-    else if(i===idx)b.style.background='salmon';
-  });
-  const quiz=document.getElementById('quiz');
-  const msg=document.createElement('p');
-  msg.innerHTML=(idx===q.answer
-    ? (score++,'<span style="color:green">🟢 正解！</span>')
-    : `<span style="color:red">❌ 不正解</span><br><span style="color:#555">正解: ${q.options[q.answer]}</span>`);
-  const exp=document.createElement('p'); exp.textContent="解説: "+q.explanation;
-  quiz.append(msg,exp);
-  const next=document.getElementById('nextBtn');
-  next.style.display='block';
-  next.onclick=()=>{
-    msg.remove(); exp.remove(); next.style.display='none';
-    if(++current<questions.length)showQuestion(); else showResults();
-  };
-}
+    function selectAnswer(idx) {
+      const q = questions[current];
+      const ul = document.getElementById('options');
+      [...ul.children].forEach((li, i) => {
+        const b = li.firstChild;
+        b.disabled = true;
+        if (i === q.answer) b.style.background = 'lightgreen';
+        else if (i === idx) b.style.background = 'salmon';
+      });
+      const quiz = document.getElementById('quiz');
+      const msg = document.createElement('p');
+      msg.innerHTML = (idx === q.answer
+        ? (score++, '<span style="color:green">🟢 正解！</span>')
+        : `<span style="color:red">❌ 不正解</span><br>
+           <span style="color:#555">正解: ${q.options[q.answer]}</span>`);
+      const exp = document.createElement('p');
+      exp.textContent = "解説: " + q.explanation;
+      quiz.append(msg, exp);
 
-function showResults(){
-  document.getElementById('quiz').style.display='none';
-  const r=document.getElementById('result');
-  r.innerHTML=`<h2>結果: ${score}/${questions.length}</h2>`;
-  r.style.display='';
-  document.getElementById('controls').style.display='';
-  document.getElementById('mainTitle').style.display='block'; // タイトル再表示
-}
-</script>
+      const next = document.getElementById('nextBtn');
+      next.style.display = 'block';
+      next.onclick = () => {
+        msg.remove();
+        exp.remove();
+        next.style.display = 'none';
+        if (++current < questions.length) showQuestion();
+        else showResults();
+      };
+    }
+
+    function showResults() {
+      document.getElementById('quiz').style.display = 'none';
+      const r = document.getElementById('result');
+      r.innerHTML = `<h2>結果: ${score}/${questions.length}</h2>`;
+      r.style.display = '';
+      document.getElementById('controls').style.display = '';
+      document.getElementById('mainTitle').style.display = 'block';
+    }
+  </script>
+
 </body>
 </html>
