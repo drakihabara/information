@@ -105,7 +105,6 @@
   /*
    * JavaScriptは「選択肢可変」「難易度削除」
    * 「エラー処理」を反映させたものです。
-   * (selectAnswerは元のカンマ演算子のものに戻しています)
    */
   let questions=[],current=0,score=0;
 
@@ -195,7 +194,7 @@
     [...ul.children].forEach((li,i)=>{
       const b=li.firstChild; b.disabled=true;
       if(i===q.answer)b.style.background='lightgreen';
-  indented     else if(i===idx)b.style.background='salmon';
+      else if(i===idx)b.style.background='salmon'; // ← ここを修正しました
     });
     const quiz=document.getElementById('quiz');
     const msg=document.createElement('p');
