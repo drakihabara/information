@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>2学期末試験対策</title>
 <style>
-    /* 「情報科指導法I」から持ってきたCSSデザインです */
+    /* 基本のデザイン（情報科指導法I） */
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       margin: 0;
@@ -71,14 +71,57 @@
       text-align: center;
       margin-top: 1.5rem;
     }
-    #nextBtn {
+    
+    /* ▼▼▼ CSS追加 ▼▼▼ */
+    /* オーバーレイ（マスク） */
+    #overlay {
+      position: fixed; /* 画面に固定 */
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5); /* 半透明の黒 */
+      display: none; /* 通常は非表示 */
+      z-index: 10;
+      /* 縦横中央揃え */
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* モーダル（ポップアップ本体） */
+    #modal {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      width: 85%; /* スマホ画面の85% */
+      max-width: 400px; /* PCでも広がりすぎないように */
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    #modal-explanation {
+      font-size: 0.95rem;
+      color: #333;
+      margin-top: 1rem;
+      border-top: 1px solid #eee;
+      padding-top: 1rem;
+    }
+    /* モーダル内の「次へ」ボタン */
+    #modalNextBtn {
+      display: block;
+      width: 100%;
+      padding: 1rem;
+      margin-top: 1.5rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.1rem;
       background: #0078d7;
       color: #fff;
-      display: none;
+      cursor: pointer;
     }
-    #nextBtn:hover {
+    #modalNextBtn:hover {
       background: #005a9e;
     }
+    /* ▲▲▲ CSS追加ここまで ▲▲▲ */
 </style>
 </head>
 <body>
@@ -96,54 +139,68 @@
     <div id="question"></div>
     <ul id="options"></ul>
     <div id="progress"></div>
-    <button id="nextBtn">次へ ▶</button>
-  </div>
+    </div>
 
   <div id="result" style="display:none;"></div>
 
-<script>
+
+  <div id="overlay">
+    <div id="modal">
+      <div id="modal-message"></div>
+      <div id="modal-explanation"></div>
+      <button id="modalNextBtn">次へ ▶</button>
+    </div>
+  </div>
+  <script>
   let questions=[],current=0,score=0;
 
-  document.querySelectorAll('.tag-btn').forEach(btn=>{
-    btn.onclick=()=>startQuiz(btn.dataset.tag);
+  // DOMが読み込まれたらイベントリスナーを設定
+  document.addEventListener('DOMContentLoaded', () => {
+    
+    document.querySelectorAll('.tag-btn').forEach(btn=>{
+      btn.onclick=()=>startQuiz(btn.dataset.tag);
+    });
+
+    // ▼▼▼ JS変更 ▼▼▼
+    // モーダルの「次へ」ボタンの処理をここで定義
+    document.getElementById('modalNextBtn').onclick = () => {
+      document.getElementById('overlay').style.display = 'none'; // モーダルを閉じる
+      
+      // 次の問題へ進む
+      if (++current < questions.length) {
+        showQuestion();
+      } else {
+        showResults();
+      }
+    };
+    // ▲▲▲ JS変更ここまで ▲▲▲
   });
 
-  /**
-   * loadCSV関数を、" (ダブルクォート) に対応したCSVパーサーに置き換えました。
-   */
+
+  /* CSVパーサー (変更なし) */
   async function loadCSV(file){
     const text = await (await fetch(file)).text();
-
-    // CSVの1行をパースする内部関数
     const parseCsvLine = (line) => {
       const result = [];
       let currentField = '';
       let inQuote = false;
-
       for (let i = 0; i < line.length; i++) {
         const char = line[i];
-
         if (char === '"') {
           if (inQuote && line[i + 1] === '"') {
-            // "" (エスケープされたクォート) の場合
             currentField += '"';
-            i++; // 次の " をスキップ
+            i++;
           } else {
-            // クォートの開始または終了
             inQuote = !inQuote;
           }
         } else if (char === ',' && !inQuote) {
-          // クォートの外のカンマ (区切り文字)
           result.push(currentField);
           currentField = '';
         } else {
-          // 通常の文字
           currentField += char;
         }
       }
-      result.push(currentField); // 最後のフィールドを追加
-
-      // 各フィールドの前後にある " を削除
+      result.push(currentField);
       return result.map(field => {
         if (field.startsWith('"') && field.endsWith('"')) {
           return field.substring(1, field.length - 1).replace(/""/g, '"');
@@ -151,16 +208,12 @@
         return field;
       });
     };
-
     return text.trim().split(/\r?\n/).slice(1).map(line => {
-      if (!line) return null; // 空行を無視
-      const c = parseCsvLine(line); // 新しいパース関数を使用
-
+      if (!line) return null;
+      const c = parseCsvLine(line);
       if (c.length < 5) return null; 
-
       const lastIdx = c.length - 1;
       const answerIdx = lastIdx - 1;
-
       return {
         q: c[1],
         options: c.slice(2, answerIdx),
@@ -170,6 +223,7 @@
     }).filter(q => q !== null);
   }
 
+  /* shuffle (変更なし) */
   function shuffle(a){
     for(let i=a.length-1;i>0;i--){
       const j=Math.floor(Math.random()*(i+1));
@@ -178,6 +232,7 @@
     return a;
   }
 
+  /* csvFileName (変更なし) */
   function csvFileName(tag){
     return {
       info1:'info1.csv',
@@ -187,6 +242,7 @@
     }[tag];
   }
 
+  /* startQuiz (変更なし) */
   async function startQuiz(tag){
     document.getElementById('controls').style.display='none';
     document.getElementById('mainTitle').style.display='none'; 
@@ -213,6 +269,7 @@
     showQuestion();
   }
 
+  /* showQuestion (変更なし) */
   function showQuestion(){
     const q=questions[current];
     document.getElementById('question').textContent=q.q;
@@ -226,39 +283,46 @@
     document.getElementById('progress').textContent=`${current+1}/${questions.length}`;
   }
 
+
+  /**
+   * ▼▼▼ JS変更 ▼▼▼
+   * selectAnswer関数をモーダル対応にしました
+   */
   function selectAnswer(idx){
     const q=questions[current],ul=document.getElementById('options');
+    
+    // 選択肢のボタンを無効化＆色付け
     [...ul.children].forEach((li,i)=>{
       const b=li.firstChild; b.disabled=true;
       if(i===q.answer)b.style.background='lightgreen';
       else if(i===idx)b.style.background='salmon'; 
     });
-    const quiz=document.getElementById('quiz');
-    const msg=document.createElement('p');
-    msg.innerHTML=(idx===q.answer
-      ? (score++,'<span style="color:green">🟢 正解！</span>')
-      : `<span style="color:red">❌ 不正解</span><br><span style="color:#555">正解: ${q.options[q.answer]}</span>`);
-    
-    /* ▼▼▼ エラー修正 ▼▼▼
-     * ここにあった 's' という余計な文字を削除しました
-     */
-    const exp=document.createElement('p'); exp.textContent="解説: "+q.explanation;
-    quiz.append(msg,exp);
-    const next=document.getElementById('nextBtn');
-    next.style.display='block';
-    next.onclick=()=>{
-    	msg.remove(); exp.remove(); next.style.display='none';
-    	if(++current<questions.length)showQuestion(); else showResults();
-    };
-  }
 
+    // モーダルの中身を作成
+    let msgHtml = '';
+    if (idx === q.answer) {
+      score++;
+      msgHtml = '<span style="color:green; font-weight: bold;">🟢 正解！</span>';
+    } else {
+      msgHtml = `<span style="color:red; font-weight: bold;">❌ 不正解</span>
+                 <br><span style="color:#555">正解: ${q.options[q.answer]}</span>`;
+    }
+
+    // モーダルの要素を取得して中身をセット
+    document.getElementById('modal-message').innerHTML = msgHtml;
+    document.getElementById('modal-explanation').textContent = "解説: " + q.explanation;
+    
+    // オーバーレイ（モーダル）を表示
+    // CSSで display:flex を使うと中央揃えになるので JS側も合わせる
+    document.getElementById('overlay').style.display = 'flex';
+  }
+  /* ▲▲▲ JS変更ここまで ▲▲▲ */
+
+
+  /* showResults (変更なし) */
   function showResults(){
     document.getElementById('quiz').style.display='none';
     const r=document.getElementById('result');
-    
-    /* ▼▼▼ エラー修正 ▼▼▼
-     * ここにあった 's' という余計な文字を削除しました
-     */
     r.innerHTML=`<h2>結果: ${score}/${questions.length}</h2>`;
     r.style.display='';
     document.getElementById('controls').style.display='';
