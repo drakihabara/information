@@ -5,72 +5,90 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>
 <title>試験対策アプリ</title>
 <style>
-    /* 基本デザイン */
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      margin: 0;
-      padding: 0.5rem;
-      background: #f9f9f9;
-      color: #333;
-      font-size: 18px;
-      line-height: 1.6;
-    }
-    h1 {
-      text-align: center;
-      font-size: 1.8rem;
-      margin: 1rem 0 2rem;
-    }
-    /* ボタン：スマホ対応 */
-    .tag-btn {
-      display: block;
-      width: 100%;
-      padding: 1.5rem 1rem;
-      margin: 0.8rem 0;
-      border: 1px solid #ccc;
-      border-radius: 12px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      background: #fff;
-      text-align: center;
-      cursor: pointer;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    .tag-btn:active { background: #f0f0f0; }
+  /* 基本のデザイン */
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    padding: 0.5rem;
+    background: #f9f9f9;
+    color: #333;
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  h1 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin: 1.5rem 0 2rem;
+    color: #2c3e50;
+  }
+  /* メニューコンテナ */
+  .container {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+  /* スマホ特化ボタン */
+  .tag-btn {
+    display: block;
+    width: 100%;
+    padding: 1.8rem 1rem;
+    margin: 1.2rem 0;
+    border: 1px solid #dcdde1;
+    border-radius: 15px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    background: #fff;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    color: #2f3640;
+    text-decoration: none;
+    box-sizing: border-box;
+  }
+  .tag-btn:active {
+    background: #f5f6fa;
+    transform: scale(0.98);
+  }
+  /* 学期カラー */
+  .btn-s1 { border-left: 10px solid #f1c40f; }
+  .btn-s2 { border-left: 10px solid #e74c3c; }
+  .btn-s3 { border-left: 10px solid #3498db; }
 
-    /* 学期ごとのアクセントカラー */
-    .btn-s1 { border-left: 10px solid #f1c40f; }
-    .btn-s2 { border-left: 10px solid #e74c3c; }
-    .btn-s3 { border-left: 10px solid #3498db; }
+  /* クイズ表示 */
+  #question { margin: 1.5rem 0.5rem; font-size: 1.25rem; font-weight: bold; line-height: 1.5; }
+  #options { list-style: none; padding: 0; }
+  #options li { margin-bottom: 0.8rem; }
+  #options button {
+    width: 100%; padding: 1.3rem; font-size: 1.1rem; border: 1px solid #ccc;
+    border-radius: 12px; background: #fff; text-align: left;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  }
+  #options button:disabled { opacity: 0.8; }
+  #progress { text-align: center; margin-top: 1.5rem; color: #888; font-size: 0.9rem; }
 
-    #question { margin: 1rem 0.5rem; font-size: 1.2rem; font-weight: bold; }
-    #options { list-style: none; padding: 0; }
-    #options li { margin-bottom: 0.6rem; }
-    #options button {
-      width: 100%; padding: 1.2rem; font-size: 1.1rem; border: 1px solid #ccc;
-      border-radius: 10px; background: #fff; text-align: left;
-    }
-    #progress { text-align: center; margin-top: 1rem; color: #666; font-size: 0.9rem; }
-
-    /* モーダル */
-    #overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background-color: rgba(0, 0, 0, 0.6); display: none;
-      align-items: center; justify-content: center; z-index: 100;
-    }
-    #modal { background: #fff; padding: 1.5rem; border-radius: 15px; width: 85%; max-width: 400px; }
-    #modal-explanation {
-      font-size: 0.95rem; color: #333; margin-top: 1rem;
-      border-top: 1px solid #eee; padding-top: 1rem;
-    }
-    #modalNextBtn {
-      display: block; width: 100%; padding: 1.2rem; margin-top: 1.5rem;
-      border: none; border-radius: 10px; font-size: 1.1rem;
-      background: #0078d7; color: #fff;
-    }
+  /* モーダル */
+  #overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); display: none;
+    align-items: center; justify-content: center; z-index: 100;
+  }
+  #modal { background: #fff; padding: 1.5rem; border-radius: 15px; width: 88%; max-width: 400px; box-sizing: border-box; }
+  #modal-message { font-size: 1.5rem; font-weight: bold; text-align: center; margin-bottom: 1rem; }
+  #modal-explanation {
+    font-size: 0.95rem; color: #444; margin-top: 1rem;
+    border-top: 1px solid #eee; padding-top: 1rem; line-height: 1.6;
+  }
+  #modalNextBtn {
+    display: block; width: 100%; padding: 1.3rem; margin-top: 1.5rem;
+    border: none; border-radius: 12px; font-size: 1.2rem; font-weight: bold;
+    background: #3498db; color: #fff;
+  }
 </style>
 </head>
 <body>
 
+<div class="container">
   <h1 id="mainTitle">試験対策アプリ</h1>
 
   <div id="term-select">
@@ -84,7 +102,7 @@
     <button class="tag-btn" data-tag="info2">情報II</button>
     <button class="tag-btn" data-tag="appA" id="btn-appA">アプリA</button>
     <button class="tag-btn" data-tag="appB" id="btn-appB">アプリB</button>
-    <button class="tag-btn" style="background:#eee; font-size:1rem;" onclick="location.reload()">← 戻る</button>
+    <button class="tag-btn" style="background:#eee; font-size:1rem; border:none;" onclick="location.reload()">← 選び直す</button>
   </div>
 
   <div id="quiz" style="display:none;">
@@ -93,38 +111,82 @@
     <div id="progress"></div>
   </div>
 
-  <div id="result" style="display:none; text-align:center;"></div>
-
-  <div id="overlay">
-    <div id="modal">
-      <div id="modal-message" style="font-size:1.3rem; font-weight:bold; text-align:center;"></div>
-      <div id="modal-explanation"></div>
-      <button id="modalNextBtn">次へ ▶</button>
-    </div>
+  <div id="result" style="display:none; text-align:center;">
+    <div id="result-content"></div>
+    <button class="tag-btn" style="background:#d4edda; border-color:#28a745;" onclick="restartWithNewQuestions()">続ける（次の20問）</button>
+    <button class="tag-btn" style="background:#eee; font-size:1rem; border:none; margin-top:2rem;" onclick="location.reload()">教科・学期を変える</button>
   </div>
+</div>
+
+<div id="overlay">
+  <div id="modal">
+    <div id="modal-message"></div>
+    <div id="modal-explanation"></div>
+    <button id="modalNextBtn">次へ ▶</button>
+  </div>
+</div>
 
 <script>
-  let questions=[], current=0, score=0, selectedTerm='';
+  let allQuestions = []; // CSVから読み込んだ全データ
+  let questions = [];    // 現在の20問
+  let current = 0, score = 0, selectedTerm = '';
 
-  // 学期を選択した際、科目ボタンを表示
+  // 学期選択後の処理
   function showSubjects(term) {
     selectedTerm = term;
     document.getElementById('term-select').style.display = 'none';
     document.getElementById('subject-select').style.display = 'block';
     
-    // 2学期のみ アプリA/B を隠す
+    // 2学期のみアプリA/Bを非表示にする
     const isTerm2 = (term === '02');
     document.getElementById('btn-appA').style.display = isTerm2 ? 'none' : 'block';
     document.getElementById('btn-appB').style.display = isTerm2 ? 'none' : 'block';
 
-    // 教科ボタンにクリックイベントを設定
+    // 教科ボタンに一括設定
     document.querySelectorAll('#subject-select .tag-btn[data-tag]').forEach(btn => {
       btn.onclick = () => startQuiz(btn.dataset.tag);
     });
   }
 
-  /* CSVパーサー */
-  async function loadCSV(file){
+  // クイズ開始
+  async function startQuiz(tag) {
+    document.getElementById('subject-select').style.display = 'none';
+    document.getElementById('mainTitle').style.display = 'none'; 
+    
+    const fileName = `${tag}_${selectedTerm}.csv`;
+    
+    try {
+      allQuestions = await loadCSV(fileName);
+    } catch(err) {
+      alert("CSVファイルの読み込みに失敗しました: " + fileName);
+      location.reload();
+      return;
+    }
+
+    if (allQuestions.length === 0) {
+      alert("問題データが空です。");
+      location.reload();
+      return;
+    }
+
+    restartWithNewQuestions();
+  }
+
+  // 「続ける」および初回起動：ランダムに20問抽出
+  function restartWithNewQuestions() {
+    document.getElementById('result').style.display = 'none';
+    
+    // 全問題からランダムに20問選ぶ
+    questions = shuffle([...allQuestions]).slice(0, 20);
+    current = 0;
+    score = 0;
+    
+    document.getElementById('quiz').style.display = 'block';
+    showQuestion();
+  }
+
+  // CSVパース
+  async function loadCSV(file) {
     const response = await fetch(file);
     const text = await response.text();
     const parseCsvLine = (line) => {
@@ -144,8 +206,9 @@
       return result.map(f => f.startsWith('"') && f.endsWith('"') ? f.slice(1, -1).replace(/""/g, '"') : f);
     };
     return text.trim().split(/\r?\n/).slice(1).map(line => {
+      if (!line) return null;
       const c = parseCsvLine(line);
-      if (c.length < 5) return null;
+      if (c.length < 4) return null;
       const lastIdx = c.length - 1;
       const answerIdx = lastIdx - 1;
       return {
@@ -157,7 +220,7 @@
     }).filter(q => q !== null);
   }
 
-  function shuffle(a){
+  function shuffle(a) {
     for(let i=a.length-1;i>0;i--){
       const j=Math.floor(Math.random()*(i+1));
       [a[i],a[j]]=[a[j],a[i]];
@@ -165,54 +228,36 @@
     return a;
   }
 
-  async function startQuiz(tag){
-    document.getElementById('subject-select').style.display='none';
-    document.getElementById('mainTitle').style.display='none'; 
-    
-    // 命名規則: info1_03.csv 
-    const fileName = `${tag}_${selectedTerm}.csv`;
-    
-    let pool;
-    try {
-      pool = await loadCSV(fileName);
-    } catch(err) {
-      alert("ファイル読み込み失敗: " + fileName);
-      location.reload();
-      return;
-    }
-
-    questions = shuffle(pool).slice(0, 20); 
-    current = score = 0;
-    document.getElementById('quiz').style.display='';
-    showQuestion();
-  }
-
-  function showQuestion(){
-    const q=questions[current];
+  function showQuestion() {
+    const q = questions[current];
     document.getElementById('question').innerHTML = q.q;
-    const ul=document.getElementById('options'); ul.innerHTML='';
-    q.options.forEach((opt,i)=>{
-      const li=document.createElement('li');
-      li.innerHTML=`<button>${opt}</button>`;
-      li.firstChild.onclick=()=>selectAnswer(i);
+    const ul = document.getElementById('options');
+    ul.innerHTML = '';
+    q.options.forEach((opt, i) => {
+      const li = document.createElement('li');
+      li.innerHTML = `<button>${opt}</button>`;
+      li.firstChild.onclick = () => selectAnswer(i);
       ul.appendChild(li);
     });
-    document.getElementById('progress').textContent=`${current+1}/${questions.length}`;
+    document.getElementById('progress').textContent = `${current + 1} / ${questions.length}`;
   }
 
-  function selectAnswer(idx){
-    const q=questions[current], ul=document.getElementById('options');
-    [...ul.children].forEach((li,i)=>{
-      const b=li.firstChild; b.disabled=true;
-      if(i===q.answer) b.style.background='#d4edda';
-      else if(i===idx) b.style.background='#f8d7da'; 
+  function selectAnswer(idx) {
+    const q = questions[current];
+    const btns = document.getElementById('options').querySelectorAll('button');
+    btns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.answer) btn.style.background = '#d4edda';
+      else if (i === idx) btn.style.background = '#f8d7da';
     });
 
     const isCorrect = (idx === q.answer);
-    if(isCorrect) score++;
+    if (isCorrect) score++;
 
-    document.getElementById('modal-message').innerHTML = isCorrect ? '🟢 正解！' : '❌ 不正解';
-    document.getElementById('modal-explanation').innerHTML = "解説: " + q.explanation;
+    document.getElementById('modal-message').innerHTML = isCorrect ? 
+      '<span style="color:green;">🟢 正解！</span>' : 
+      '<span style="color:red;">❌ 不正解</span>';
+    document.getElementById('modal-explanation').innerHTML = "<strong>解説:</strong><br>" + q.explanation;
     document.getElementById('overlay').style.display = 'flex';
   }
 
@@ -222,11 +267,14 @@
     else showResults();
   };
 
-  function showResults(){
-    document.getElementById('quiz').style.display='none';
-    const r=document.getElementById('result');
-    r.innerHTML=`<h2>結果: ${score}/${questions.length}</h2><button class="tag-btn" onclick="location.reload()">最初に戻る</button>`;
-    r.style.display='block';
+  function showResults() {
+    document.getElementById('quiz').style.display = 'none';
+    const r = document.getElementById('result');
+    document.getElementById('result-content').innerHTML = `
+      <h2 style="margin-top:0;">結果</h2>
+      <div style="font-size:2.5rem; font-weight:bold; margin-bottom:1rem;">${score} / ${questions.length}</div>
+    `;
+    r.style.display = 'block';
   }
 </script>
 </body>
