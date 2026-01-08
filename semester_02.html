@@ -1,1 +1,110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no" />
+  <title>試験対策アプリ</title>
+  <style>
+    /* 共通デザイン */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 0.5rem;
+      background: #f4f7f9;
+      color: #333;
+      font-size: 18px;
+    }
+    .header-area {
+      padding: 0.5rem;
+      display: flex;
+      justify-content: flex-start;
+    }
+    .back-link {
+      text-decoration: none;
+      color: #3498db;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+    h1 {
+      text-align: center;
+      font-size: 1.6rem;
+      margin: 1rem 0 2rem;
+      color: #2c3e50;
+    }
+    /* ボタンデザイン */
+    .tag-btn {
+      display: block;
+      width: 100%;
+      padding: 1.8rem 1rem;
+      margin: 1.2rem 0;
+      border: 1px solid #dcdde1;
+      border-radius: 15px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      background: #ffffff;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      color: #2f3640;
+    }
+    .tag-btn:active {
+      background: #f5f6fa;
+      transform: scale(0.98);
+    }
+    /* クイズ表示エリア */
+    #question { margin: 1.5rem 0.5rem; font-size: 1.2rem; font-weight: bold; line-height: 1.5; }
+    #options { list-style: none; padding: 0; }
+    #options li { margin-bottom: 0.8rem; }
+    #options button {
+      width: 100%; padding: 1.2rem; font-size: 1.1rem; border: 1px solid #ccc;
+      border-radius: 10px; background: #fff; text-align: left;
+    }
+    /* モーダル */
+    #overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 100;
+    }
+    #modal { background: #fff; padding: 1.5rem; border-radius: 15px; width: 85%; max-width: 400px; }
+    #modalNextBtn {
+      display: block; width: 100%; padding: 1.2rem; margin-top: 1.5rem;
+      background: #3498db; color: #fff; border: none; border-radius: 10px; font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
 
+  <div class="header-area">
+    <a href="index.html" class="back-link">← 戻る</a>
+  </div>
+
+  <h1 id="mainTitle">試験対策アプリ</h1>
+
+  <div id="controls">
+    <button class="tag-btn" data-tag="info1">情報I</button>
+    <button class="tag-btn" data-tag="info2">情報II</button>
+  </div>
+
+  <div id="quiz" style="display:none;">
+    <div id="question"></div>
+    <ul id="options"></ul>
+    <div id="progress" style="text-align:center; margin-top:2rem; color:#888;"></div>
+  </div>
+
+  <div id="result" style="display:none;">
+    <div id="result-content" style="text-align:center;"></div>
+    <button class="tag-btn" onclick="location.reload()">もう一度解く</button>
+    <a href="index.html" class="tag-btn" style="background:#eee; text-decoration:none;">学期選択に戻る</a>
+  </div>
+
+  <div id="overlay">
+    <div id="modal">
+      <div id="modal-message"></div>
+      <div id="modal-explanation" style="margin-top:1rem; border-top:1px solid #eee; padding-top:1rem; font-size:0.95rem;"></div>
+      <button id="modalNextBtn">次へ ▶</button>
+    </div>
+  </div>
+
+  <script src="quiz-engine.js"></script>
+
+</body>
+</html>
