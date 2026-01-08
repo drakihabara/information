@@ -1,72 +1,233 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-  <title>試験対策アプリ</title>
-  <style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>
+<title>試験対策アプリ</title>
+<style>
+    /* 基本デザイン */
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       margin: 0;
-      padding: 0;
-      background: #f4f7f9;
+      padding: 0.5rem;
+      background: #f9f9f9;
       color: #333;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh; /* 画面中央に配置 */
-    }
-    .menu-container {
-      width: 100%;
-      max-width: 400px;
-      padding: 2rem;
-      box-sizing: border-box;
+      font-size: 18px;
+      line-height: 1.6;
     }
     h1 {
       text-align: center;
       font-size: 1.8rem;
-      margin-bottom: 2.5rem;
-      color: #2c3e50;
+      margin: 1rem 0 2rem;
     }
-    /* スマホで押しやすい大きなボタン */
+    /* ボタン：スマホ対応 */
     .tag-btn {
       display: block;
       width: 100%;
-      padding: 1.8rem 1rem;
-      margin: 1.2rem 0;
-      border: 1px solid #dcdde1;
-      border-radius: 15px;
-      font-size: 1.3rem;
+      padding: 1.5rem 1rem;
+      margin: 0.8rem 0;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      font-size: 1.2rem;
       font-weight: bold;
-      background: #ffffff;
+      background: #fff;
       text-align: center;
       cursor: pointer;
-      text-decoration: none;
-      color: #2f3640;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-      box-sizing: border-box;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
-    /* タップ時のフィードバック */
-    .tag-btn:active {
-      background: #f5f6fa;
-      transform: scale(0.98);
-      box-shadow: 0 2px 3px rgba(0,0,0,0.1);
-    }
-    /* 左側のアクセントカラーのみ残して視認性を確保 */
+    .tag-btn:active { background: #f0f0f0; }
+
+    /* 学期ごとのアクセントカラー */
     .btn-s1 { border-left: 10px solid #f1c40f; }
     .btn-s2 { border-left: 10px solid #e74c3c; }
     .btn-s3 { border-left: 10px solid #3498db; }
-  </style>
+
+    #question { margin: 1rem 0.5rem; font-size: 1.2rem; font-weight: bold; }
+    #options { list-style: none; padding: 0; }
+    #options li { margin-bottom: 0.6rem; }
+    #options button {
+      width: 100%; padding: 1.2rem; font-size: 1.1rem; border: 1px solid #ccc;
+      border-radius: 10px; background: #fff; text-align: left;
+    }
+    #progress { text-align: center; margin-top: 1rem; color: #666; font-size: 0.9rem; }
+
+    /* モーダル */
+    #overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.6); display: none;
+      align-items: center; justify-content: center; z-index: 100;
+    }
+    #modal { background: #fff; padding: 1.5rem; border-radius: 15px; width: 85%; max-width: 400px; }
+    #modal-explanation {
+      font-size: 0.95rem; color: #333; margin-top: 1rem;
+      border-top: 1px solid #eee; padding-top: 1rem;
+    }
+    #modalNextBtn {
+      display: block; width: 100%; padding: 1.2rem; margin-top: 1.5rem;
+      border: none; border-radius: 10px; font-size: 1.1rem;
+      background: #0078d7; color: #fff;
+    }
+</style>
 </head>
 <body>
 
-  <div class="menu-container">
-    <h1>試験対策アプリ</h1>
+  <h1 id="mainTitle">試験対策アプリ</h1>
 
-    <a href="semester_01.html" class="tag-btn btn-s1">1学期</a>
-    <a href="semester_02.html" class="tag-btn btn-s2">2学期</a>
-    <a href="semester_03.html" class="tag-btn btn-s3">3学期</a>
+  <div id="term-select">
+    <button class="tag-btn btn-s1" onclick="showSubjects('01')">1学期</button>
+    <button class="tag-btn btn-s2" onclick="showSubjects('02')">2学期</button>
+    <button class="tag-btn btn-s3" onclick="showSubjects('03')">3学期</button>
   </div>
 
+  <div id="subject-select" style="display:none;">
+    <button class="tag-btn" data-tag="info1">情報I</button>
+    <button class="tag-btn" data-tag="info2">情報II</button>
+    <button class="tag-btn" data-tag="appA" id="btn-appA">アプリA</button>
+    <button class="tag-btn" data-tag="appB" id="btn-appB">アプリB</button>
+    <button class="tag-btn" style="background:#eee; font-size:1rem;" onclick="location.reload()">← 戻る</button>
+  </div>
+
+  <div id="quiz" style="display:none;">
+    <div id="question"></div>
+    <ul id="options"></ul>
+    <div id="progress"></div>
+  </div>
+
+  <div id="result" style="display:none; text-align:center;"></div>
+
+  <div id="overlay">
+    <div id="modal">
+      <div id="modal-message" style="font-size:1.3rem; font-weight:bold; text-align:center;"></div>
+      <div id="modal-explanation"></div>
+      <button id="modalNextBtn">次へ ▶</button>
+    </div>
+  </div>
+
+<script>
+  let questions=[], current=0, score=0, selectedTerm='';
+
+  // 学期を選択した際、科目ボタンを表示
+  function showSubjects(term) {
+    selectedTerm = term;
+    document.getElementById('term-select').style.display = 'none';
+    document.getElementById('subject-select').style.display = 'block';
+    
+    // 2学期のみ アプリA/B を隠す
+    const isTerm2 = (term === '02');
+    document.getElementById('btn-appA').style.display = isTerm2 ? 'none' : 'block';
+    document.getElementById('btn-appB').style.display = isTerm2 ? 'none' : 'block';
+
+    // 教科ボタンにクリックイベントを設定
+    document.querySelectorAll('#subject-select .tag-btn[data-tag]').forEach(btn => {
+      btn.onclick = () => startQuiz(btn.dataset.tag);
+    });
+  }
+
+  /* CSVパーサー */
+  async function loadCSV(file){
+    const response = await fetch(file);
+    const text = await response.text();
+    const parseCsvLine = (line) => {
+      const result = [];
+      let currentField = '', inQuote = false;
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"') {
+          if (inQuote && line[i + 1] === '"') { currentField += '"'; i++; }
+          else inQuote = !inQuote;
+        } else if (char === ',' && !inQuote) {
+          result.push(currentField);
+          currentField = '';
+        } else currentField += char;
+      }
+      result.push(currentField);
+      return result.map(f => f.startsWith('"') && f.endsWith('"') ? f.slice(1, -1).replace(/""/g, '"') : f);
+    };
+    return text.trim().split(/\r?\n/).slice(1).map(line => {
+      const c = parseCsvLine(line);
+      if (c.length < 5) return null;
+      const lastIdx = c.length - 1;
+      const answerIdx = lastIdx - 1;
+      return {
+        q: c[1],
+        options: c.slice(2, answerIdx).filter(opt => opt.trim() !== ""),
+        answer: +c[answerIdx] - 1,
+        explanation: c[lastIdx]
+      };
+    }).filter(q => q !== null);
+  }
+
+  function shuffle(a){
+    for(let i=a.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+
+  async function startQuiz(tag){
+    document.getElementById('subject-select').style.display='none';
+    document.getElementById('mainTitle').style.display='none'; 
+    
+    // 命名規則: info1_03.csv 
+    const fileName = `${tag}_${selectedTerm}.csv`;
+    
+    let pool;
+    try {
+      pool = await loadCSV(fileName);
+    } catch(err) {
+      alert("ファイル読み込み失敗: " + fileName);
+      location.reload();
+      return;
+    }
+
+    questions = shuffle(pool).slice(0, 20); 
+    current = score = 0;
+    document.getElementById('quiz').style.display='';
+    showQuestion();
+  }
+
+  function showQuestion(){
+    const q=questions[current];
+    document.getElementById('question').innerHTML = q.q;
+    const ul=document.getElementById('options'); ul.innerHTML='';
+    q.options.forEach((opt,i)=>{
+      const li=document.createElement('li');
+      li.innerHTML=`<button>${opt}</button>`;
+      li.firstChild.onclick=()=>selectAnswer(i);
+      ul.appendChild(li);
+    });
+    document.getElementById('progress').textContent=`${current+1}/${questions.length}`;
+  }
+
+  function selectAnswer(idx){
+    const q=questions[current], ul=document.getElementById('options');
+    [...ul.children].forEach((li,i)=>{
+      const b=li.firstChild; b.disabled=true;
+      if(i===q.answer) b.style.background='#d4edda';
+      else if(i===idx) b.style.background='#f8d7da'; 
+    });
+
+    const isCorrect = (idx === q.answer);
+    if(isCorrect) score++;
+
+    document.getElementById('modal-message').innerHTML = isCorrect ? '🟢 正解！' : '❌ 不正解';
+    document.getElementById('modal-explanation').innerHTML = "解説: " + q.explanation;
+    document.getElementById('overlay').style.display = 'flex';
+  }
+
+  document.getElementById('modalNextBtn').onclick = () => {
+    document.getElementById('overlay').style.display = 'none';
+    if (++current < questions.length) showQuestion();
+    else showResults();
+  };
+
+  function showResults(){
+    document.getElementById('quiz').style.display='none';
+    const r=document.getElementById('result');
+    r.innerHTML=`<h2>結果: ${score}/${questions.length}</h2><button class="tag-btn" onclick="location.reload()">最初に戻る</button>`;
+    r.style.display='block';
+  }
+</script>
 </body>
 </html>
