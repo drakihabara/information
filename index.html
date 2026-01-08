@@ -3,44 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-  <title>学年末試験対策 - メニュー</title>
+  <title>試験対策アプリ</title>
   <style>
-    /* 共通デザイン (style.css 内容) */
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       margin: 0;
-      padding: 0.5rem;
+      padding: 0;
       background: #f4f7f9;
       color: #333;
-      font-size: 18px;
-      line-height: 1.6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh; /* 画面中央に配置 */
     }
     .menu-container {
-      max-width: 500px;
-      margin: 0 auto;
-      padding: 1.5rem 1rem;
+      width: 100%;
+      max-width: 400px;
+      padding: 2rem;
+      box-sizing: border-box;
     }
     h1 {
       text-align: center;
       font-size: 1.8rem;
-      margin: 1rem 0 0.5rem;
-      color: #2c3e50;
-    }
-    .description {
-      text-align: center;
-      color: #7f8c8d;
-      font-size: 0.95rem;
       margin-bottom: 2.5rem;
+      color: #2c3e50;
     }
     /* スマホで押しやすい大きなボタン */
     .tag-btn {
       display: block;
       width: 100%;
-      padding: 1.5rem 1rem;
-      margin: 1rem 0;
+      padding: 1.8rem 1rem;
+      margin: 1.2rem 0;
       border: 1px solid #dcdde1;
       border-radius: 15px;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       font-weight: bold;
       background: #ffffff;
       text-align: center;
@@ -48,60 +44,28 @@
       text-decoration: none;
       color: #2f3640;
       box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-      transition: transform 0.1s, box-shadow 0.1s;
       box-sizing: border-box;
     }
     /* タップ時のフィードバック */
     .tag-btn:active {
-      transform: translateY(2px);
-      box-shadow: 0 2px 3px rgba(0,0,0,0.1);
       background: #f5f6fa;
+      transform: scale(0.98);
+      box-shadow: 0 2px 3px rgba(0,0,0,0.1);
     }
-    /* 各学期のアクセントカラー */
-    .btn-s1 { border-left: 10px solid #f1c40f; } /* 1学期：イエロー */
-    .btn-s2 { border-left: 10px solid #e74c3c; } /* 2学期：レッド */
-    .btn-s3 { border-left: 10px solid #3498db; } /* 3学期：ブルー */
-
-    .sub-text {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: normal;
-      color: #7f8c8d;
-      margin-top: 0.4rem;
-    }
-    .footer-info {
-      text-align: center;
-      font-size: 0.75rem;
-      color: #bdc3c7;
-      margin-top: 4rem;
-    }
+    /* 左側のアクセントカラーのみ残して視認性を確保 */
+    .btn-s1 { border-left: 10px solid #f1c40f; }
+    .btn-s2 { border-left: 10px solid #e74c3c; }
+    .btn-s3 { border-left: 10px solid #3498db; }
   </style>
 </head>
 <body>
 
   <div class="menu-container">
-    <h1>学年末試験対策</h1>
-    <p class="description">学習する学期の範囲を選んでください</p>
+    <h1>試験対策アプリ</h1>
 
-    <a href="semester_01.html" class="tag-btn btn-s1">
-      1学期 範囲
-      <span class="sub-text">情報モラル・知的財産・情報の特性</span>
-    </a>
-    
-    <a href="semester_02.html" class="tag-btn btn-s2">
-      2学期 範囲
-      <span class="sub-text">デジタル表現・2進数・情報デザイン</span>
-    </a>
-    
-    <a href="semester_03.html" class="tag-btn btn-s3">
-      3学期 範囲
-      <span class="sub-text">データ分析・Pythonプログラミング</span>
-    </a>
-
-    <div class="footer-info">
-      © 2026 Exam Prep App<br>
-      iPhone 17 Pro Optimized
-    </div>
+    <a href="semester_01.html" class="tag-btn btn-s1">1学期</a>
+    <a href="semester_02.html" class="tag-btn btn-s2">2学期</a>
+    <a href="semester_03.html" class="tag-btn btn-s3">3学期</a>
   </div>
 
 </body>
