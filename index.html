@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>
 <title>試験対策アプリ</title>
 <style>
-  /* 基本のデザイン */
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     margin: 0;
@@ -21,14 +20,12 @@
     margin: 1.5rem 0 2rem;
     color: #2c3e50;
   }
-  /* メニューコンテナ */
   .container {
     width: 100%;
     max-width: 500px;
     margin: 0 auto;
     box-sizing: border-box;
   }
-  /* スマホ特化ボタン */
   .tag-btn {
     display: block;
     width: 100%;
@@ -50,24 +47,20 @@
     background: #f5f6fa;
     transform: scale(0.98);
   }
-  /* 学期カラー */
   .btn-s1 { border-left: 10px solid #f1c40f; }
   .btn-s2 { border-left: 10px solid #e74c3c; }
   .btn-s3 { border-left: 10px solid #3498db; }
 
-  /* クイズ表示 */
   #question { margin: 1.5rem 0.5rem; font-size: 1.25rem; font-weight: bold; line-height: 1.5; }
   #options { list-style: none; padding: 0; }
   #options li { margin-bottom: 0.8rem; }
   #options button {
     width: 100%; padding: 1.3rem; font-size: 1.1rem; border: 1px solid #ccc;
     border-radius: 12px; background: #fff; text-align: left;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
   }
   #options button:disabled { opacity: 0.8; }
   #progress { text-align: center; margin-top: 1.5rem; color: #888; font-size: 0.9rem; }
 
-  /* モーダル */
   #overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background-color: rgba(0, 0, 0, 0.7); display: none;
@@ -102,7 +95,6 @@
     <button class="tag-btn" data-tag="info2">情報II</button>
     <button class="tag-btn" data-tag="appA" id="btn-appA">アプリA</button>
     <button class="tag-btn" data-tag="appB" id="btn-appB">アプリB</button>
-    <button class="tag-btn" style="background:#eee; font-size:1rem; border:none;" onclick="location.reload()">← 選び直す</button>
   </div>
 
   <div id="quiz" style="display:none;">
@@ -114,7 +106,6 @@
   <div id="result" style="display:none; text-align:center;">
     <div id="result-content"></div>
     <button class="tag-btn" style="background:#d4edda; border-color:#28a745;" onclick="restartWithNewQuestions()">続ける（次の20問）</button>
-    <button class="tag-btn" style="background:#eee; font-size:1rem; border:none; margin-top:2rem;" onclick="location.reload()">教科・学期を変える</button>
   </div>
 </div>
 
@@ -127,65 +118,44 @@
 </div>
 
 <script>
-  let allQuestions = []; // CSVから読み込んだ全データ
-  let questions = [];    // 現在の20問
+  let allQuestions = []; 
+  let questions = [];    
   let current = 0, score = 0, selectedTerm = '';
 
-  // 学期選択後の処理
   function showSubjects(term) {
     selectedTerm = term;
     document.getElementById('term-select').style.display = 'none';
     document.getElementById('subject-select').style.display = 'block';
-    
-    // 2学期のみアプリA/Bを非表示にする
     const isTerm2 = (term === '02');
     document.getElementById('btn-appA').style.display = isTerm2 ? 'none' : 'block';
     document.getElementById('btn-appB').style.display = isTerm2 ? 'none' : 'block';
-
-    // 教科ボタンに一括設定
     document.querySelectorAll('#subject-select .tag-btn[data-tag]').forEach(btn => {
       btn.onclick = () => startQuiz(btn.dataset.tag);
     });
   }
 
-  // クイズ開始
   async function startQuiz(tag) {
     document.getElementById('subject-select').style.display = 'none';
     document.getElementById('mainTitle').style.display = 'none'; 
-    
     const fileName = `${tag}_${selectedTerm}.csv`;
-    
     try {
       allQuestions = await loadCSV(fileName);
     } catch(err) {
-      alert("CSVファイルの読み込みに失敗しました: " + fileName);
+      alert("CSV読み込み失敗: " + fileName);
       location.reload();
       return;
     }
-
-    if (allQuestions.length === 0) {
-      alert("問題データが空です。");
-      location.reload();
-      return;
-    }
-
     restartWithNewQuestions();
   }
 
-  // 「続ける」および初回起動：ランダムに20問抽出
   function restartWithNewQuestions() {
     document.getElementById('result').style.display = 'none';
-    
-    // 全問題からランダムに20問選ぶ
     questions = shuffle([...allQuestions]).slice(0, 20);
-    current = 0;
-    score = 0;
-    
+    current = 0; score = 0;
     document.getElementById('quiz').style.display = 'block';
     showQuestion();
   }
 
-  // CSVパース
   async function loadCSV(file) {
     const response = await fetch(file);
     const text = await response.text();
@@ -209,14 +179,7 @@
       if (!line) return null;
       const c = parseCsvLine(line);
       if (c.length < 4) return null;
-      const lastIdx = c.length - 1;
-      const answerIdx = lastIdx - 1;
-      return {
-        q: c[1],
-        options: c.slice(2, answerIdx).filter(opt => opt.trim() !== ""),
-        answer: +c[answerIdx] - 1,
-        explanation: c[lastIdx]
-      };
+      return { q: c[1], options: c.slice(2, c.length - 2).filter(opt => opt.trim() !== ""), answer: +c[c.length - 2] - 1, explanation: c[c.length - 1] };
     }).filter(q => q !== null);
   }
 
@@ -250,13 +213,9 @@
       if (i === q.answer) btn.style.background = '#d4edda';
       else if (i === idx) btn.style.background = '#f8d7da';
     });
-
     const isCorrect = (idx === q.answer);
     if (isCorrect) score++;
-
-    document.getElementById('modal-message').innerHTML = isCorrect ? 
-      '<span style="color:green;">🟢 正解！</span>' : 
-      '<span style="color:red;">❌ 不正解</span>';
+    document.getElementById('modal-message').innerHTML = isCorrect ? '🟢 正解！' : '❌ 不正解';
     document.getElementById('modal-explanation').innerHTML = "<strong>解説:</strong><br>" + q.explanation;
     document.getElementById('overlay').style.display = 'flex';
   }
