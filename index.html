@@ -179,7 +179,11 @@
       if (!line) return null;
       const c = parseCsvLine(line);
       if (c.length < 4) return null;
-      return { q: c[1], options: c.slice(2, c.length - 2).filter(opt => opt.trim() !== ""), answer: +c[c.length - 2] - 1, explanation: c[c.length - 1] };
+      // 可変長に対応: 正解番号は最後から2番目、解説は最後
+      const answerNum = parseInt(c[c.length - 2]);
+      const explanationTxt = c[c.length - 1];
+      const opts = c.slice(2, c.length - 2).filter(opt => opt.trim() !== "");
+      return { q: c[1], options: opts, answer: answerNum - 1, explanation: explanationTxt };
     }).filter(q => q !== null);
   }
 
@@ -215,8 +219,16 @@
     });
     const isCorrect = (idx === q.answer);
     if (isCorrect) score++;
+
+    // 正解のテキストを取得
+    const correctText = q.options[q.answer];
+
     document.getElementById('modal-message').innerHTML = isCorrect ? '🟢 正解！' : '❌ 不正解';
-    document.getElementById('modal-explanation').innerHTML = "<strong>解説:</strong><br>" + q.explanation;
+    // 解説の上に正解テキストを表示
+    document.getElementById('modal-explanation').innerHTML = 
+      "正解：<strong>" + correctText + "</strong><br><br>" + 
+      "<strong>解説:</strong><br>" + q.explanation;
+    
     document.getElementById('overlay').style.display = 'flex';
   }
 
