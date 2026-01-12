@@ -120,7 +120,7 @@
 <script>
   let allQuestions = []; 
   let questions = [];    
-  let current = 0, score = 0, selectedTerm = '';
+  let current = 0, score = 0, selectedTerm = '', currentFileName = '';
 
   function showSubjects(term) {
     selectedTerm = term;
@@ -137,20 +137,49 @@
   async function startQuiz(tag) {
     document.getElementById('subject-select').style.display = 'none';
     document.getElementById('mainTitle').style.display = 'none'; 
-    const fileName = `${tag}_${selectedTerm}.csv`;
+    currentFileName = `${tag}_${selectedTerm}.csv`;
     try {
-      allQuestions = await loadCSV(fileName);
+      allQuestions = await loadCSV(currentFileName);
     } catch(err) {
-      alert("CSV読み込み失敗: " + fileName);
+      alert("CSV読み込み失敗: " + currentFileName);
       location.reload();
       return;
     }
     restartWithNewQuestions();
   }
 
+  // 進捗管理（localStorageを使用）
+  function getClearedIds() {
+    const data = localStorage.getItem('cleared_' + currentFileName);
+    return data ? JSON.parse(data) : [];
+  }
+
+  function saveClearedId(id) {
+    let cleared = getClearedIds();
+    if (!cleared.includes(id)) {
+      cleared.push(id);
+      localStorage.setItem('cleared_' + currentFileName, JSON.stringify(cleared));
+    }
+  }
+
   function restartWithNewQuestions() {
     document.getElementById('result').style.display = 'none';
-    questions = shuffle([...allQuestions]).slice(0, 20);
+    const clearedIds = getClearedIds();
+    
+    // 未正解の問題と正解済みの問題を分離
+    const unsolved = allQuestions.filter(q => !clearedIds.includes(q.id));
+    const solved = allQuestions.filter(q => clearedIds.includes(q.id));
+
+    // 未正解を優先してシャッフル抽出
+    let selection = shuffle([...unsolved]);
+    if (selection.length < 20) {
+      const needed = 20 - selection.length;
+      selection = selection.concat(shuffle([...solved]).slice(0, needed));
+    } else {
+      selection = selection.slice(0, 20);
+    }
+
+    questions = selection;
     current = 0; score = 0;
     document.getElementById('quiz').style.display = 'block';
     showQuestion();
@@ -175,15 +204,17 @@
       result.push(currentField);
       return result.map(f => f.startsWith('"') && f.endsWith('"') ? f.slice(1, -1).replace(/""/g, '"') : f);
     };
+
     return text.trim().split(/\r?\n/).slice(1).map(line => {
-      if (!line) return null;
+      if (!line.trim()) return null;
       const c = parseCsvLine(line);
       if (c.length < 4) return null;
-      // 可変長に対応: 正解番号は最後から2番目、解説は最後
+      // CSV構成: ID, 問題, 選択肢..., 正解番号, 解説
+      const id = c[0];
       const answerNum = parseInt(c[c.length - 2]);
       const explanationTxt = c[c.length - 1];
-      const opts = c.slice(2, c.length - 2).filter(opt => opt.trim() !== "");
-      return { q: c[1], options: opts, answer: answerNum - 1, explanation: explanationTxt };
+      const opts = c.slice(2, c.length - 2).filter(opt => opt && opt.trim() !== "");
+      return { id: id, q: c[1], options: opts, answer: answerNum - 1, explanation: explanationTxt };
     }).filter(q => q !== null);
   }
 
@@ -218,13 +249,13 @@
       else if (i === idx) btn.style.background = '#f8d7da';
     });
     const isCorrect = (idx === q.answer);
-    if (isCorrect) score++;
+    if (isCorrect) {
+      score++;
+      saveClearedId(q.id); // 正解したIDを内部的に保存
+    }
 
-    // 正解のテキストを取得
     const correctText = q.options[q.answer];
-
     document.getElementById('modal-message').innerHTML = isCorrect ? '🟢 正解！' : '❌ 不正解';
-    // 解説の上に正解テキストを表示
     document.getElementById('modal-explanation').innerHTML = 
       "正解：<strong>" + correctText + "</strong><br><br>" + 
       "<strong>解説:</strong><br>" + q.explanation;
