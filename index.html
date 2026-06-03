@@ -50,7 +50,6 @@
   .btn-s1 { border-left: 10px solid #f1c40f; }
   .btn-s2 { border-left: 10px solid #e74c3c; }
   .btn-s3 { border-left: 10px solid #3498db; }
-
   #question { margin: 1.5rem 0.5rem; font-size: 1.25rem; font-weight: bold; line-height: 1.5; }
   #options { list-style: none; padding: 0; }
   #options li { margin-bottom: 0.8rem; }
@@ -60,7 +59,6 @@
   }
   #options button:disabled { opacity: 0.8; }
   #progress { text-align: center; margin-top: 1.5rem; color: #888; font-size: 0.9rem; }
-
   #overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background-color: rgba(0, 0, 0, 0.7); display: none;
@@ -80,35 +78,25 @@
 </style>
 </head>
 <body>
-
 <div class="container">
   <h1 id="mainTitle">試験対策アプリ</h1>
-
   <div id="term-select">
     <button class="tag-btn btn-s1" onclick="showSubjects('01')">1学期</button>
     <button class="tag-btn btn-s2" onclick="showSubjects('02')">2学期</button>
     <button class="tag-btn btn-s3" onclick="showSubjects('03')">3学期</button>
   </div>
-
-  <div id="subject-select" style="display:none;">
-    <button class="tag-btn" data-tag="info1">情報I</button>
-    <button class="tag-btn" data-tag="info2">情報II</button>
-    <button class="tag-btn" data-tag="appA" id="btn-appA">アプリA</button>
-    <button class="tag-btn" data-tag="appB" id="btn-appB">アプリB</button>
-  </div>
-
+  <div id="subject-select" style="display:none;"></div>
   <div id="quiz" style="display:none;">
     <div id="question"></div>
     <ul id="options"></ul>
     <div id="progress"></div>
   </div>
-
   <div id="result" style="display:none; text-align:center;">
     <div id="result-content"></div>
     <button class="tag-btn" style="background:#d4edda; border-color:#28a745;" onclick="restartWithNewQuestions()">続ける（次の20問）</button>
+    <button class="tag-btn" style="background:#f8d7da; border-color:#dc3545; margin-top:1rem;" onclick="resetProgress()">学習履歴をリセット</button>
   </div>
 </div>
-
 <div id="overlay">
   <div id="modal">
     <div id="modal-message"></div>
@@ -116,22 +104,54 @@
     <button id="modalNextBtn">次へ ▶</button>
   </div>
 </div>
-
 <script>
   let allQuestions = []; 
   let questions = [];    
   let current = 0, score = 0, selectedTerm = '', currentFileName = '';
 
+  const termSubjects = {
+    '01': [
+      { tag: 'appA', text: 'アプリA' },
+      { tag: 'appB', text: 'アプリB' },
+      { tag: 'info2', text: '情報Ⅱ' },
+      { tag: 'infosys', text: '情報システム' },
+      { tag: 'infoex', text: '情報演習' },
+      { tag: 'content', text: 'コンテンツ' }
+    ],
+    '02': [
+      { tag: 'info1', text: '情報I' },
+      { tag: 'info2', text: '情報II' }
+    ],
+    '03': [
+      { tag: 'info1', text: '情報I' },
+      { tag: 'info2', text: '情報II' },
+      { tag: 'appA', text: 'アプリA' },
+      { tag: 'appB', text: 'アプリB' }
+    ]
+  };
+
+  function escapeHTML(str) {
+    if (!str) return "";
+    return String(str).replace(/&/g, '&amp;')
+                      .replace(/</g, '&lt;')
+                      .replace(/>/g, '&gt;')
+                      .replace(/"/g, '&quot;')
+                      .replace(/'/g, '&#39;');
+  }
+
   function showSubjects(term) {
     selectedTerm = term;
     document.getElementById('term-select').style.display = 'none';
-    document.getElementById('subject-select').style.display = 'block';
-    const isTerm2 = (term === '02');
-    document.getElementById('btn-appA').style.display = isTerm2 ? 'none' : 'block';
-    document.getElementById('btn-appB').style.display = isTerm2 ? 'none' : 'block';
-    document.querySelectorAll('#subject-select .tag-btn[data-tag]').forEach(btn => {
-      btn.onclick = () => startQuiz(btn.dataset.tag);
+    const container = document.getElementById('subject-select');
+    container.innerHTML = '';
+    termSubjects[term].forEach(sub => {
+      const btn = document.createElement('button');
+      btn.className = 'tag-btn';
+      btn.textContent = sub.text;
+      btn.onclick = () => startQuiz(sub.tag);
+      container.appendChild(btn);
     });
+    container.style.display = 'block';
   }
 
   async function startQuiz(tag) {
@@ -148,7 +168,6 @@
     restartWithNewQuestions();
   }
 
-  // 進捗管理（localStorageを使用）
   function getClearedIds() {
     const data = localStorage.getItem('cleared_' + currentFileName);
     return data ? JSON.parse(data) : [];
@@ -162,15 +181,18 @@
     }
   }
 
+  function resetProgress() {
+    if (confirm("この科目の学習履歴をリセットしますか？")) {
+      localStorage.removeItem('cleared_' + currentFileName);
+      location.reload();
+    }
+  }
+
   function restartWithNewQuestions() {
     document.getElementById('result').style.display = 'none';
     const clearedIds = getClearedIds();
-    
-    // 未正解の問題と正解済みの問題を分離
     const unsolved = allQuestions.filter(q => !clearedIds.includes(q.id));
     const solved = allQuestions.filter(q => clearedIds.includes(q.id));
-
-    // 未正解を優先してシャッフル抽出
     let selection = shuffle([...unsolved]);
     if (selection.length < 20) {
       const needed = 20 - selection.length;
@@ -178,7 +200,6 @@
     } else {
       selection = selection.slice(0, 20);
     }
-
     questions = selection;
     current = 0; score = 0;
     document.getElementById('quiz').style.display = 'block';
@@ -202,14 +223,12 @@
         } else currentField += char;
       }
       result.push(currentField);
-      return result.map(f => f.startsWith('"') && f.endsWith('"') ? f.slice(1, -1).replace(/""/g, '"') : f);
+      return result;
     };
-
     return text.trim().split(/\r?\n/).slice(1).map(line => {
       if (!line.trim()) return null;
       const c = parseCsvLine(line);
       if (c.length < 4) return null;
-      // CSV構成: ID, 問題, 選択肢..., 正解番号, 解説
       const id = c[0];
       const answerNum = parseInt(c[c.length - 2]);
       const explanationTxt = c[c.length - 1];
@@ -228,13 +247,15 @@
 
   function showQuestion() {
     const q = questions[current];
-    document.getElementById('question').innerHTML = q.q;
+    document.getElementById('question').textContent = q.q;
     const ul = document.getElementById('options');
     ul.innerHTML = '';
     q.options.forEach((opt, i) => {
       const li = document.createElement('li');
-      li.innerHTML = `<button>${opt}</button>`;
-      li.firstChild.onclick = () => selectAnswer(i);
+      const btn = document.createElement('button');
+      btn.textContent = opt;
+      btn.onclick = () => selectAnswer(i);
+      li.appendChild(btn);
       ul.appendChild(li);
     });
     document.getElementById('progress').textContent = `${current + 1} / ${questions.length}`;
@@ -251,15 +272,13 @@
     const isCorrect = (idx === q.answer);
     if (isCorrect) {
       score++;
-      saveClearedId(q.id); // 正解したIDを内部的に保存
+      saveClearedId(q.id);
     }
-
     const correctText = q.options[q.answer];
-    document.getElementById('modal-message').innerHTML = isCorrect ? '🟢 正解！' : '❌ 不正解';
+    document.getElementById('modal-message').textContent = isCorrect ? '🟢 正解！' : '❌ 不正解';
     document.getElementById('modal-explanation').innerHTML = 
-      "正解：<strong>" + correctText + "</strong><br><br>" + 
-      "<strong>解説:</strong><br>" + q.explanation;
-    
+      "正解：<strong>" + escapeHTML(correctText) + "</strong><br><br>" + 
+      "<strong>解説:</strong><br>" + escapeHTML(q.explanation);
     document.getElementById('overlay').style.display = 'flex';
   }
 
