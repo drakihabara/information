@@ -94,7 +94,6 @@
   <div id="result" style="display:none; text-align:center;">
     <div id="result-content"></div>
     <button class="tag-btn" style="background:#d4edda; border-color:#28a745;" onclick="restartWithNewQuestions()">続ける（次の20問）</button>
-    <button class="tag-btn" style="background:#f8d7da; border-color:#dc3545; margin-top:1rem;" onclick="resetProgress()">学習履歴をリセット</button>
   </div>
 </div>
 <div id="overlay">
@@ -178,13 +177,6 @@
     if (!cleared.includes(id)) {
       cleared.push(id);
       localStorage.setItem('cleared_' + currentFileName, JSON.stringify(cleared));
-    }
-  }
-
-  function resetProgress() {
-    if (confirm("この科目の学習履歴をリセットしますか？")) {
-      localStorage.removeItem('cleared_' + currentFileName);
-      location.reload();
     }
   }
 
